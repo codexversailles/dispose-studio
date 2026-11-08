@@ -19,7 +19,6 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   const updateTextPosition = useEditorStore((s) => s.updateTextPosition);
   const setActiveSnapGuides = useEditorStore((s) => s.setActiveSnapGuides);
 
-  const [isInlineEditing, setIsInlineEditing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [resizingHandle, setResizingHandle] = useState<ResizeHandleType | null>(null);
   const [liveDimensions, setLiveDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -52,21 +51,18 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
 
   // Auto-resize inline textarea height to scrollHeight smoothly
   useEffect(() => {
-    if (isInlineEditing && textareaRef.current) {
-      textareaRef.current.focus();
-      const len = textareaRef.current.value.length;
-      textareaRef.current.setSelectionRange(len, len);
+    if (isSelected && textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [isInlineEditing]);
+  }, [isSelected, textLayer?.content, textLayer?.fontSize, textLayer?.lineHeight, textLayer?.width]);
 
+  // Focus textarea when selected
   useEffect(() => {
-    if (isInlineEditing && textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    if (isSelected && textareaRef.current && document.activeElement !== textareaRef.current) {
+      textareaRef.current.focus();
     }
-  }, [textLayer?.content, textLayer?.fontSize, textLayer?.lineHeight]);
+  }, [isSelected]);
 
   if (!textLayer) return null;
 
@@ -94,8 +90,10 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     position.y ??
     (position.top ? parseInt(position.top, 10) || 120 : position.bottom ? 580 : 320);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (isExporting || isInlineEditing || resizingHandle) return;
+  // Dragging text position (snaps to center)
+  const handleDragPointerDown = (e: React.PointerEvent) => {
+    if (isExporting || resizingHandle) return;
+    e.stopPropagation();
 
     selectText(textId);
 
@@ -120,8 +118,8 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     }
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || isExporting || isInlineEditing || resizingHandle) return;
+  const handleDragPointerMove = (e: React.PointerEvent) => {
+    if (!isDragging || isExporting || resizingHandle) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
@@ -157,7 +155,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     updateTextPosition(textId, targetX, targetY);
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
+  const handleDragPointerUp = (e: React.PointerEvent) => {
     if (!isDragging) return;
     setIsDragging(false);
     setActiveSnapGuides([]);
@@ -184,10 +182,10 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     }
   };
 
-  // ================= Canva-Style Direct Manipulation Resizing =================
+  // ================= Canva-Style Direct Manipulation Column & Box Resizing =================
   const handleResizePointerDown = (e: React.PointerEvent, handle: ResizeHandleType) => {
     e.stopPropagation();
-    if (isExporting || isInlineEditing) return;
+    if (isExporting) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard || !elementRef.current) return;
@@ -222,7 +220,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handleResizePointerMove = (e: React.PointerEvent) => {
-    if (!resizingHandle || isExporting || isInlineEditing) return;
+    if (!resizingHandle || isExporting) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
@@ -240,7 +238,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     let newX = startX;
     let newY = startY;
 
-    // Horizontal handle adjustments
+    // Horizontal handle adjustments (Column Width)
     if (resizingHandle === 'right' || resizingHandle === 'br' || resizingHandle === 'tr') {
       newWidth = Math.max(60, Math.min(340, startWidth + dx));
       const appliedDx = newWidth - startWidth;
@@ -374,10 +372,13 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     width: '100%',
   };
 
+  const isNearTop = currentY < 48;
+  const badgePositionClass = isNearTop ? '-bottom-7' : '-top-7';
+
   return (
     <div
       ref={elementRef}
-      className="absolute z-30 select-none box-border flex flex-col justify-center touch-none"
+      className="absolute z-30 select-none box-border flex flex-col justify-center touch-none group"
       style={{
         left: `${currentX}px`,
         top: `${currentY}px`,
@@ -388,30 +389,43 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         boxSizing: 'border-box',
       }}
       onClick={(e) => {
-        if (!isExporting && !resizingHandle) {
+        if (!isExporting && !resizingHandle && !isDragging) {
           e.stopPropagation();
           selectText(textId);
-          setIsInlineEditing(true);
         }
       }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      onPointerDown={(e) => {
+        if (isExporting || resizingHandle) return;
+        // If clicking inside the textarea itself, let textarea handle typing and cursor placement
+        if ((e.target as HTMLElement).tagName === 'TEXTAREA') {
+          if (!isSelected) {
+            selectText(textId);
+          }
+          return;
+        }
+        // If clicking container padding/badge, drag text
+        handleDragPointerDown(e);
+      }}
+      onPointerMove={handleDragPointerMove}
+      onPointerUp={handleDragPointerUp}
+      onPointerCancel={handleDragPointerUp}
     >
       {/* Visual drag move badge when selected */}
       {!isExporting && isSelected && (
         <div
           title="Drag to reposition text (snaps to center)"
-          className="absolute -top-7 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#141722] text-zinc-300 hover:text-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none"
-          onPointerDown={handlePointerDown}
+          className={`absolute ${badgePositionClass} left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#141722] text-zinc-300 hover:text-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none`}
+          onPointerDown={handleDragPointerDown}
+          onPointerMove={handleDragPointerMove}
+          onPointerUp={handleDragPointerUp}
+          onPointerCancel={handleDragPointerUp}
         >
           <ArrowsOutCardinal size={12} weight="bold" />
         </div>
       )}
 
-      {/* Canva-Style Canvas Edge & Corner Resize Handles */}
-      {!isExporting && isSelected && !isInlineEditing && (
+      {/* Canva-Style Canvas Edge & Corner Resize Handles (Always available when selected) */}
+      {!isExporting && isSelected && (
         <>
           {/* Live dimensions indicator */}
           {liveDimensions && (
@@ -420,7 +434,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
             </div>
           )}
 
-          {/* Left Edge Handle (Width) */}
+          {/* Left Edge Handle (Column Width) */}
           <div
             title="Drag to resize column width"
             className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black/80 rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
@@ -430,7 +444,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
             onPointerCancel={handleResizePointerUp}
           />
 
-          {/* Right Edge Handle (Width) */}
+          {/* Right Edge Handle (Column Width) */}
           <div
             title="Drag to resize column width"
             className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black/80 rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
@@ -496,7 +510,8 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         </>
       )}
 
-      {isInlineEditing && !isExporting ? (
+      {/* Content Area: Direct typing when selected, display when idle */}
+      {isSelected && !isExporting ? (
         <div className="relative w-full">
           <textarea
             ref={textareaRef}
@@ -506,9 +521,11 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
               e.target.style.height = 'auto';
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
-            onBlur={() => setIsInlineEditing(false)}
             onKeyDown={(e) => {
-              if (e.key === 'Escape') setIsInlineEditing(false);
+              if (e.key === 'Escape') selectText(null);
+            }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
             }}
             className="block resize-none overflow-hidden selection:bg-white/20"
             style={{
@@ -530,10 +547,10 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         </div>
       ) : (
         <div
-          className="cursor-text"
+          className="cursor-pointer"
           style={sharedTextStyle}
         >
-          {content}
+          {content || ' '}
         </div>
       )}
     </div>

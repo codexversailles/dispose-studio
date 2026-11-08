@@ -624,23 +624,47 @@ export const InspectorPanel: React.FC = () => {
               </div>
             </div>
 
-            {/* Letter Spacing */}
-            <div className="space-y-2 pt-3 border-t border-[var(--neu-border-highlight)]">
-              <div className="flex items-center justify-between">
-                <span className="text-zinc-400 text-left">Letter spacing</span>
-                <span className="text-white text-right tabular-nums">{activeText.letterSpacing}px</span>
+            {/* Letter Spacing & Line Spacing */}
+            <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
+              {/* Letter Spacing */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-400 text-left">Letter spacing</span>
+                  <span className="text-white text-right tabular-nums">{activeText.letterSpacing}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="-1.0"
+                  max="4.0"
+                  step="0.2"
+                  value={activeText.letterSpacing}
+                  onChange={(e) =>
+                    updateText(selectedTextId, { letterSpacing: parseFloat(e.target.value) })
+                  }
+                  className="w-full accent-white"
+                />
               </div>
-              <input
-                type="range"
-                min="-1.0"
-                max="4.0"
-                step="0.2"
-                value={activeText.letterSpacing}
-                onChange={(e) =>
-                  updateText(selectedTextId, { letterSpacing: parseFloat(e.target.value) })
-                }
-                className="w-full accent-white"
-              />
+
+              {/* Line Spacing (Line Height) */}
+              <div className="space-y-1.5 pt-1 border-t border-[var(--neu-border-highlight)]">
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-400 text-left">Line spacing</span>
+                  <span className="text-white text-right tabular-nums">
+                    {(typeof activeText.lineHeight === 'number' ? activeText.lineHeight : 1.35).toFixed(2)}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.8"
+                  max="2.5"
+                  step="0.05"
+                  value={typeof activeText.lineHeight === 'number' ? activeText.lineHeight : 1.35}
+                  onChange={(e) =>
+                    updateText(selectedTextId, { lineHeight: parseFloat(e.target.value) })
+                  }
+                  className="w-full accent-white"
+                />
+              </div>
             </div>
 
             {/* Drop Shadow for Readability */}
