@@ -1,5 +1,5 @@
 /* Hallmark · v2.0.0 · theme: obsidian · genre: modern-minimal · material: photo · job: create */
-/* critique: tactile swiss style studio with Ralphi Sans typography and 20 animation heuristics */
+/* critique: tactile dark neumorphic studio with extruded and sunken surfaces, soft directional shadows */
 /* Hallmark · waive 37 · 4 font families: ralphi sans, helvetica neue, inter, jetbrains mono · photo dump studio artboard editor allows custom curated typography */
 
 @import "tailwindcss";
@@ -336,17 +336,43 @@
 @import "@fontsource/jetbrains-mono/500.css";
 
 :root {
-  --color-studio-bg: #090a0d;
-  --color-studio-viewport: #060709;
-  --color-studio-panel: #0d0f14;
-  --color-studio-surface: #13161e;
-  --color-studio-card: #171b24;
-  --color-studio-text: #f4f5f7;
-  --color-studio-muted: #8b92a0;
-  --color-studio-border: rgba(255, 255, 255, 0.08);
-  --color-studio-accent: oklch(0.62 0.21 258);
-  --color-studio-scrollbar: #1e222b;
-  --color-studio-scrollbar-hover: #2e3442;
+  --color-studio-bg: #12141c;
+  --color-studio-viewport: #0e1017;
+  --color-studio-panel: #141722;
+  --color-studio-surface: #171b26;
+  --color-studio-card: #181c28;
+  --color-studio-text: #f0f2f5;
+  --color-studio-text-bright: #f8f9fb;
+  --color-studio-muted: #8e95a5;
+  --color-studio-border: rgba(255, 255, 255, 0.04);
+  --color-studio-accent: #f0f2f7;
+  --color-studio-scrollbar: #1b1f2b;
+  --color-studio-scrollbar-hover: #262c3d;
+
+  /* Neumorphic Tone Scale */
+  --neu-bg: #12141c;
+  --neu-panel: #141722;
+  --neu-surface: #171b26;
+  --neu-surface-convex: linear-gradient(145deg, #191e2b, #151822);
+  --neu-surface-concave: linear-gradient(145deg, #131620, #191d29);
+  --neu-surface-pressed: linear-gradient(145deg, #0f121a, #151923);
+  --neu-well: #0e1118;
+  --neu-border-highlight: rgba(255, 255, 255, 0.04);
+  --neu-border-dark: rgba(0, 0, 0, 0.35);
+  --neu-border-dark-sm: rgba(0, 0, 0, 0.25);
+  --neu-border-subtle: rgba(255, 255, 255, 0.03);
+  --neu-border-focus: rgba(255, 255, 255, 0.12);
+  --neu-shadow-dark: rgba(0, 0, 0, 0.55);
+  --neu-shadow-light: rgba(255, 255, 255, 0.03);
+
+  --neu-shadow-raised: 7px 7px 16px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
+  --neu-shadow-raised-sm: 4px 4px 10px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light);
+  --neu-shadow-raised-hover: 9px 9px 20px rgba(0, 0, 0, 0.65), -5px -5px 12px rgba(255, 255, 255, 0.045);
+  --neu-shadow-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.65), inset -2px -2px 5px rgba(255, 255, 255, 0.025);
+  --neu-shadow-inset-sm: inset 2px 2px 4px rgba(0, 0, 0, 0.6), inset -1px -1px 3px rgba(255, 255, 255, 0.02);
+  --neu-shadow-well: inset 3px 3px 8px rgba(0, 0, 0, 0.75), inset -2px -2px 6px rgba(255, 255, 255, 0.025);
+  --neu-shadow-focus: inset 2px 2px 5px rgba(0, 0, 0, 0.8), inset -1px -1px 3px rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --neu-shadow-artboard: 18px 18px 45px rgba(0, 0, 0, 0.75), -8px -8px 25px rgba(255, 255, 255, 0.025);
 
   --font-ralphi: 'Ralphi Sans', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   --font-helvetica: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
@@ -362,6 +388,82 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
+}
+
+/* Neumorphic Tactical Surfaces */
+.neu-raised {
+  background: var(--neu-surface-convex);
+  box-shadow: var(--neu-shadow-raised);
+  border: 1px solid var(--neu-border-highlight);
+}
+
+.neu-raised-sm {
+  background: var(--neu-surface-convex);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--neu-border-highlight);
+}
+
+.neu-raised-flat {
+  background: var(--neu-surface);
+  box-shadow: var(--neu-shadow-raised);
+  border: 1px solid var(--neu-border-highlight);
+}
+
+.neu-pressed {
+  background: var(--neu-surface-pressed);
+  box-shadow: var(--neu-shadow-inset);
+  border: 1px solid var(--neu-border-dark);
+}
+
+.neu-pressed-sm {
+  background: var(--neu-surface-pressed);
+  box-shadow: var(--neu-shadow-inset-sm);
+  border: 1px solid var(--neu-border-dark-sm);
+}
+
+.neu-well {
+  background: var(--neu-well);
+  box-shadow: var(--neu-shadow-well);
+  border: 1px solid var(--neu-border-dark);
+}
+
+.neu-button {
+  background: var(--neu-surface-convex);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--neu-border-highlight);
+  color: var(--color-studio-text);
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out;
+}
+
+.neu-button:hover:not(:disabled) {
+  box-shadow: var(--neu-shadow-raised-hover);
+}
+
+.neu-button:active:not(:disabled) {
+  transform: scale(0.97);
+  background: var(--neu-surface-pressed);
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+.neu-button-active {
+  background: var(--neu-surface-pressed) !important;
+  box-shadow: var(--neu-shadow-inset) !important;
+  border-color: var(--neu-border-dark) !important;
+  color: var(--color-studio-text-bright) !important;
+}
+
+.neu-input {
+  background: var(--neu-well);
+  box-shadow: var(--neu-shadow-inset-sm);
+  border: 1px solid var(--neu-border-subtle);
+  color: var(--color-studio-text);
+  transition: box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.neu-input:focus {
+  border-color: var(--neu-border-focus);
+  box-shadow: var(--neu-shadow-focus);
+  outline: none;
 }
 
 /* Accessible focus visible on all interactive elements */

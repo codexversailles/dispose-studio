@@ -97,7 +97,7 @@ export const InspectorPanel: React.FC = () => {
 
       <aside
         aria-label="Inspector Panel"
-        className={`fixed inset-x-0 bottom-0 z-50 md:relative md:z-20 md:w-80 h-[75vh] md:h-full border-t md:border-t-0 md:border-l border-white/10 bg-[#0e1117] rounded-t-2xl md:rounded-none flex flex-col text-white select-none overflow-hidden shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed inset-x-0 bottom-0 z-50 md:relative md:z-20 md:w-84 h-[75vh] md:h-full border-t md:border-t-0 md:border-l border-[var(--neu-border-highlight)] bg-[var(--neu-panel)] rounded-t-3xl md:rounded-none flex flex-col text-white select-none overflow-hidden shadow-[-6px_0_20px_rgba(0,0,0,0.35)] transition-transform duration-300 ease-out ${
           isMobileInspectorOpen
             ? 'translate-y-0'
             : 'translate-y-full md:translate-y-0 pointer-events-none md:pointer-events-auto'
@@ -123,7 +123,7 @@ export const InspectorPanel: React.FC = () => {
         />
 
         {/* Top Header / Mode Switcher */}
-        <div className="p-3 border-b border-white/10 flex items-center justify-between bg-[#12161f]">
+        <div className="p-3.5 border-b border-[var(--neu-border-highlight)] flex items-center justify-between bg-[var(--neu-panel)]">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-tight text-white text-left">
             <SlidersHorizontal size={15} weight="bold" />
             <span>
@@ -154,23 +154,23 @@ export const InspectorPanel: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsMobileInspectorOpen(false)}
-              className="p-1 rounded-md hover:bg-white/10 text-white/60 hover:text-white md:hidden cursor-pointer"
+              className="p-1.5 rounded-xl neu-button text-zinc-300 hover:text-white md:hidden cursor-pointer"
               aria-label="Close Inspector"
             >
-              <X size={16} weight="bold" />
+              <X size={15} weight="bold" />
             </button>
           </div>
         </div>
 
-      {/* Navigation Sub-Tabs */}
-      <div className="flex border-b border-white/10 text-xs">
+      {/* Navigation Sub-Tabs (Neumorphic Recessed Well) */}
+      <div className="neu-well p-1.5 mx-3 mt-3 rounded-2xl flex gap-1.5 text-xs">
         <button
           type="button"
           onClick={() => setActiveInspectorTab('canvas')}
-          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+          className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
             activeInspectorTab === 'canvas' && !selectedSlotId && !selectedTextId
-              ? 'border-b-2 border-white text-white font-medium bg-white/5'
-              : 'text-white/60 hover:text-white hover:bg-white/5'
+              ? 'neu-button-active text-white font-medium'
+              : 'neu-button text-zinc-400 hover:text-white'
           }`}
         >
           <Stack size={14} weight="bold" />
@@ -181,10 +181,10 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('calendar')}
-            className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
               activeInspectorTab === 'calendar'
-                ? 'border-b-2 border-white text-white font-medium bg-white/5'
-                : 'text-white/60 hover:text-white hover:bg-white/5'
+                ? 'neu-button-active text-white font-medium'
+                : 'neu-button text-zinc-400 hover:text-white'
             }`}
           >
             <CalendarBlank size={14} weight="bold" />
@@ -196,10 +196,10 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('slot')}
-            className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
               activeInspectorTab === 'slot'
-                ? 'border-b-2 border-white text-white font-medium bg-white/5'
-                : 'text-white/60 hover:text-white hover:bg-white/5'
+                ? 'neu-button-active text-white font-medium'
+                : 'neu-button text-zinc-400 hover:text-white'
             }`}
           >
             <ImageSquare size={14} weight="bold" />
@@ -211,10 +211,10 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('text')}
-            className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
               activeInspectorTab === 'text'
-                ? 'border-b-2 border-white text-white font-medium bg-white/5'
-                : 'text-white/60 hover:text-white hover:bg-white/5'
+                ? 'neu-button-active text-white font-medium'
+                : 'neu-button text-zinc-400 hover:text-white'
             }`}
           >
             <TextT size={14} weight="bold" />
@@ -235,7 +235,7 @@ export const InspectorPanel: React.FC = () => {
               </label>
 
               {activeSlot.imageUrl ? (
-                <div className="relative aspect-video rounded-lg overflow-hidden border border-white/10 bg-black">
+                <div className="relative aspect-video rounded-2xl overflow-hidden neu-well border border-[var(--neu-border-highlight)]">
                   <img
                     src={activeSlot.imageUrl}
                     alt="Preview"
@@ -248,14 +248,14 @@ export const InspectorPanel: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => slotFileInputRef.current?.click()}
-                      className="px-3 py-1 rounded bg-white text-black font-medium text-[11px] hover:bg-zinc-200 transition-colors"
+                      className="px-3 py-1.5 rounded-xl neu-button text-white font-medium text-[11px] cursor-pointer"
                     >
                       Replace
                     </button>
                     <button
                       type="button"
                       onClick={() => clearSlot(selectedSlotId)}
-                      className="px-3 py-1 rounded bg-zinc-800 text-white font-medium text-[11px] hover:bg-zinc-700 transition-colors"
+                      className="px-3 py-1.5 rounded-xl neu-button text-zinc-300 font-medium text-[11px] cursor-pointer"
                     >
                       Empty
                     </button>
@@ -265,7 +265,7 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => slotFileInputRef.current?.click()}
-                  className="w-full py-6 border border-dashed border-white/20 hover:border-white rounded-lg flex flex-col items-center justify-center gap-2 text-zinc-400 hover:text-white transition-colors bg-white/5"
+                  className="w-full py-6 neu-well hover:border-white/20 rounded-2xl flex flex-col items-center justify-center gap-2 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <UploadSimple size={20} weight="bold" />
                   <span>Choose photo for slot</span>
@@ -278,13 +278,13 @@ export const InspectorPanel: React.FC = () => {
               <label className="text-[11px] font-medium text-zinc-400 block text-left">
                 Cell appearance
               </label>
-              <div className="grid grid-cols-3 gap-1 p-1 bg-white/5 rounded-lg border border-white/10 text-center">
+              <div className="grid grid-cols-3 gap-1 p-1 neu-well rounded-2xl text-center">
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'photo')}
-                  className={`py-1.5 rounded transition-colors text-xs ${
+                  className={`py-1.5 rounded-xl transition-all cursor-pointer text-xs ${
                     activeSlot.frameStyle === 'photo'
-                      ? 'bg-white text-black font-medium'
+                      ? 'neu-button-active text-white font-medium'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -293,9 +293,9 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'empty-bordered')}
-                  className={`py-1.5 rounded transition-colors text-xs ${
+                  className={`py-1.5 rounded-xl transition-all cursor-pointer text-xs ${
                     activeSlot.frameStyle === 'empty-bordered'
-                      ? 'bg-white text-black font-medium'
+                      ? 'neu-button-active text-white font-medium'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -304,9 +304,9 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'hidden')}
-                  className={`py-1.5 rounded transition-colors text-xs ${
+                  className={`py-1.5 rounded-xl transition-all cursor-pointer text-xs ${
                     activeSlot.frameStyle === 'hidden'
-                      ? 'bg-white text-black font-medium'
+                      ? 'neu-button-active text-white font-medium'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -317,7 +317,7 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Crop & Zoom Sliders (if photo filled) */}
             {activeSlot.imageUrl && (
-              <div className="space-y-4 pt-2 border-t border-white/10">
+              <div className="space-y-4 pt-3 border-t border-[var(--neu-border-highlight)]">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-white/90 text-left">Zoom scale</span>
                   <span className="text-zinc-400 text-right tabular-nums">{activeSlot.scale.toFixed(1)}x</span>
@@ -372,7 +372,7 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => updateSlot(selectedSlotId, { scale: 1.0, x: 0, y: 0 })}
-                  className="w-full py-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-1.5 text-white/80"
+                  className="w-full py-2 rounded-xl neu-button flex items-center justify-center gap-1.5 text-zinc-300 hover:text-white cursor-pointer"
                 >
                   <ArrowsClockwise size={14} weight="bold" />
                   <span>Reset crop to fit</span>
@@ -381,7 +381,7 @@ export const InspectorPanel: React.FC = () => {
             )}
 
             {/* Frame Border Controls */}
-            <div className="space-y-3 pt-2 border-t border-white/10">
+            <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-white/90 text-left">Show frame border</span>
                 <input
@@ -418,7 +418,7 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateSlot(selectedSlotId, { borderColor: e.target.value })
                       }
-                      className="w-6 h-6 rounded border border-white/20 bg-transparent cursor-pointer"
+                      className="w-7 h-7 rounded-lg neu-well p-0.5 border border-[var(--neu-border-highlight)] cursor-pointer"
                     />
                   </div>
                 </div>
@@ -426,14 +426,14 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Swap with Another Slot */}
-            <div className="space-y-2 pt-2 border-t border-white/10">
+            <div className="space-y-2 pt-3 border-t border-[var(--neu-border-highlight)]">
               <label className="text-[11px] font-medium text-zinc-400 block text-left">
                 Swap cell with
               </label>
               <div className="flex items-center gap-2">
                 <ArrowsLeftRight size={16} weight="bold" className="text-zinc-500" />
                 <select
-                  className="flex-1 bg-white/5 border border-white/10 rounded px-2 py-1.5 text-xs text-white outline-none"
+                  className="flex-1 neu-input px-3 py-2 rounded-xl text-xs text-white"
                   onChange={(e) => {
                     if (e.target.value) {
                       swapSlots(selectedSlotId, e.target.value);
@@ -476,7 +476,7 @@ export const InspectorPanel: React.FC = () => {
                 value={activeText.content}
                 onChange={(e) => updateText(selectedTextId, { content: e.target.value })}
                 placeholder="Enter caption or title..."
-                className="w-full min-h-[90px] bg-white/5 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-white resize-y font-sans text-xs leading-relaxed"
+                className="w-full min-h-[90px] neu-input rounded-2xl p-3 text-white resize-y font-sans text-xs leading-relaxed"
               />
             </div>
 
@@ -492,7 +492,7 @@ export const InspectorPanel: React.FC = () => {
                     fontFamily: e.target.value as any,
                   })
                 }
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white outline-none"
+                className="w-full neu-input rounded-xl px-3 py-2 text-white"
               >
                 <option value="Arial Light" className="bg-[#141820]">
                   Arial Light (Clean Minimalist · Default)
@@ -528,7 +528,7 @@ export const InspectorPanel: React.FC = () => {
                     {activeText.fontWeight}
                   </span>
                 </div>
-                <div className="grid grid-cols-5 gap-1 p-1 bg-white/5 rounded-lg border border-white/10 text-center">
+                <div className="grid grid-cols-5 gap-1 p-1 neu-well rounded-2xl text-center">
                   {[
                     { weight: 300, label: 'Light' },
                     { weight: 400, label: 'Reg' },
@@ -542,10 +542,10 @@ export const InspectorPanel: React.FC = () => {
                         key={weight}
                         type="button"
                         onClick={() => updateText(selectedTextId, { fontWeight: weight })}
-                        className={`py-1 rounded text-[10px] transition-all active:scale-[0.97] ${
+                        className={`py-1.5 rounded-xl text-[10px] transition-all cursor-pointer ${
                           isCurrent
-                            ? 'bg-white text-black font-semibold'
-                            : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                            ? 'neu-button-active text-white font-semibold'
+                            : 'text-zinc-400 hover:text-white'
                         }`}
                         title={`${label} (${weight})`}
                       >
@@ -562,10 +562,10 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => updateText(selectedTextId, { italic: !activeText.italic })}
-                  className={`px-3 py-1 rounded text-xs italic font-medium transition-all active:scale-[0.97] border ${
+                  className={`px-3 py-1.5 rounded-xl text-xs italic font-medium cursor-pointer ${
                     activeText.italic
-                      ? 'bg-white text-black border-white'
-                      : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'
+                      ? 'neu-button-active text-white'
+                      : 'neu-button text-zinc-400 hover:text-white'
                   }`}
                 >
                   Italic
@@ -589,7 +589,7 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Color & Alignment */}
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div>
                 <span className="text-[11px] text-zinc-400 block mb-1 text-left">Color</span>
                 <div className="flex items-center gap-2">
@@ -597,7 +597,7 @@ export const InspectorPanel: React.FC = () => {
                     type="color"
                     value={activeText.color.startsWith('#') ? activeText.color : '#ffffff'}
                     onChange={(e) => updateText(selectedTextId, { color: e.target.value })}
-                    className="w-7 h-7 rounded border border-white/20 bg-transparent cursor-pointer"
+                    className="w-7 h-7 rounded-lg neu-well p-0.5 border border-[var(--neu-border-highlight)] cursor-pointer"
                   />
                   <span className="text-[11px] text-zinc-400 text-right tabular-nums">{activeText.color}</span>
                 </div>
@@ -605,14 +605,14 @@ export const InspectorPanel: React.FC = () => {
 
               <div>
                 <span className="text-[11px] text-zinc-400 block mb-1 text-left">Align</span>
-                <div className="flex gap-1 bg-white/5 p-1 rounded border border-white/10">
+                <div className="flex gap-1 neu-well p-1 rounded-xl">
                   {(['left', 'center', 'right'] as const).map((a) => (
                     <button
                       key={a}
                       type="button"
                       onClick={() => updateText(selectedTextId, { align: a })}
-                      className={`flex-1 py-0.5 rounded capitalize text-[10px] ${
-                        activeText.align === a ? 'bg-white text-black font-medium' : 'text-zinc-400 hover:text-white'
+                      className={`flex-1 py-1 rounded-lg capitalize text-[10px] cursor-pointer ${
+                        activeText.align === a ? 'neu-button-active text-white font-medium' : 'text-zinc-400 hover:text-white'
                       }`}
                     >
                       {a}
@@ -623,7 +623,7 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Letter Spacing */}
-            <div className="space-y-2 pt-2 border-t border-white/10">
+            <div className="space-y-2 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
                 <span className="text-zinc-400 text-left">Letter spacing</span>
                 <span className="text-white text-right tabular-nums">{activeText.letterSpacing}px</span>
@@ -642,15 +642,15 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Canvas Direct Resizing Hint */}
-            <div className="p-2.5 bg-white/5 rounded-lg border border-white/10 text-white/70 flex items-center justify-between text-[11px]">
-              <span className="text-zinc-400 text-left">Column resize</span>
-              <span className="text-[10px] text-white/80 text-right">
+            <div className="p-3 neu-well rounded-2xl text-zinc-400 flex items-center justify-between text-[11px]">
+              <span className="text-left">Column resize</span>
+              <span className="text-[10px] text-zinc-300 text-right">
                 Drag handles on canvas
               </span>
             </div>
 
             {/* Drop Shadow for Readability */}
-            <div className="space-y-3 pt-2 border-t border-white/10">
+            <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-white/90 text-left">Drop shadow</span>
                 <input
@@ -714,7 +714,7 @@ export const InspectorPanel: React.FC = () => {
                     const m = parseInt(e.target.value, 10);
                     applyMonthCalendar(calendarConfig.year, m, calendarConfig.startDay);
                   }}
-                  className="bg-white/5 border border-white/10 rounded-lg p-2 text-white outline-none"
+                  className="neu-input rounded-xl p-2.5 text-white"
                 >
                   {MONTH_NAMES_CAPITAL.map((name, idx) => (
                     <option key={name} value={idx + 1} className="bg-[#141820]">
@@ -729,7 +729,7 @@ export const InspectorPanel: React.FC = () => {
                     const y = parseInt(e.target.value, 10);
                     applyMonthCalendar(y, calendarConfig.month, calendarConfig.startDay);
                   }}
-                  className="bg-white/5 border border-white/10 rounded-lg p-2 text-white outline-none"
+                  className="neu-input rounded-xl p-2.5 text-white"
                 >
                   <option value={2025} className="bg-[#141820]">2025</option>
                   <option value={2026} className="bg-[#141820]">2026</option>
@@ -743,7 +743,7 @@ export const InspectorPanel: React.FC = () => {
               <label className="text-[11px] font-medium text-zinc-400 block text-left">
                 Week starts on
               </label>
-              <div className="grid grid-cols-2 gap-1 p-1 bg-white/5 rounded-lg border border-white/10">
+              <div className="grid grid-cols-2 gap-1 p-1 neu-well rounded-2xl">
                 <button
                   type="button"
                   onClick={() => {
@@ -753,9 +753,9 @@ export const InspectorPanel: React.FC = () => {
                     });
                     applyMonthCalendar(calendarConfig.year, calendarConfig.month, 'sun');
                   }}
-                  className={`py-1.5 rounded transition-colors text-xs ${
+                  className={`py-1.5 rounded-xl transition-all cursor-pointer text-xs ${
                     calendarConfig.startDay === 'sun'
-                      ? 'bg-white text-black font-medium'
+                      ? 'neu-button-active text-white font-medium'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -770,9 +770,9 @@ export const InspectorPanel: React.FC = () => {
                     });
                     applyMonthCalendar(calendarConfig.year, calendarConfig.month, 'mon');
                   }}
-                  className={`py-1.5 rounded transition-colors text-xs ${
+                  className={`py-1.5 rounded-xl transition-all cursor-pointer text-xs ${
                     calendarConfig.startDay === 'mon'
-                      ? 'bg-white text-black font-medium'
+                      ? 'neu-button-active text-white font-medium'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -782,7 +782,7 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Weekday Header Toggle */}
-            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+            <div className="flex items-center justify-between pt-3 border-t border-[var(--neu-border-highlight)]">
               <span className="font-medium text-white/90 text-left">Show weekday header</span>
               <input
                 type="checkbox"
@@ -796,7 +796,7 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Weekday Header Typography Customizer */}
             {calendarConfig.showWeekdayHeader && (
-              <div className="space-y-3 p-3 bg-white/5 rounded-xl border border-white/10 text-xs">
+              <div className="space-y-3 p-3.5 neu-well rounded-2xl text-xs">
                 <span className="text-[10px] font-medium text-zinc-400 block text-left">
                   Weekday header font
                 </span>
@@ -811,7 +811,7 @@ export const InspectorPanel: React.FC = () => {
                         weekdayFontFamily: e.target.value as any,
                       })
                     }
-                    className="w-full bg-[#12151e] border border-white/10 rounded-lg px-2 py-1.5 text-white outline-none"
+                    className="w-full neu-input rounded-xl px-2.5 py-2 text-white"
                   >
                     <option value="Arial Light">Arial Light (Clean Minimalist · Default)</option>
                     <option value="Arial">Arial (Standard Multi-weight)</option>
@@ -832,7 +832,7 @@ export const InspectorPanel: React.FC = () => {
                       {calendarConfig.weekdayFontWeight || 500}
                     </span>
                   </div>
-                  <div className="grid grid-cols-5 gap-1 p-0.5 bg-black/40 rounded-lg border border-white/10 text-center">
+                  <div className="grid grid-cols-5 gap-1 p-1 neu-well rounded-2xl text-center">
                     {[
                       { weight: 300, label: 'Light' },
                       { weight: 400, label: 'Reg' },
@@ -846,9 +846,9 @@ export const InspectorPanel: React.FC = () => {
                           key={weight}
                           type="button"
                           onClick={() => updateCalendarConfig({ weekdayFontWeight: weight })}
-                          className={`py-1 rounded text-[9.5px] transition-all active:scale-[0.97] ${
+                          className={`py-1 rounded-xl text-[9.5px] transition-all cursor-pointer ${
                             isCur
-                              ? 'bg-white text-black font-semibold'
+                              ? 'neu-button-active text-white font-semibold'
                               : 'text-zinc-400 hover:text-white'
                           }`}
                         >
@@ -899,7 +899,7 @@ export const InspectorPanel: React.FC = () => {
 
                 {/* Case & Italic */}
                 <div className="flex items-center justify-between pt-1">
-                  <div className="flex gap-1 bg-black/40 p-0.5 rounded border border-white/10">
+                  <div className="flex gap-1 neu-well p-1 rounded-xl">
                     {[
                       { val: 'capitalize', label: 'Title' },
                       { val: 'uppercase', label: 'UPPER' },
@@ -909,9 +909,9 @@ export const InspectorPanel: React.FC = () => {
                         key={val}
                         type="button"
                         onClick={() => updateCalendarConfig({ weekdayTransform: val as any })}
-                        className={`px-1.5 py-0.5 rounded text-[9px] ${
+                        className={`px-2 py-0.5 rounded-lg text-[9px] cursor-pointer ${
                           (calendarConfig.weekdayTransform || 'capitalize') === val
-                            ? 'bg-white text-black font-medium'
+                            ? 'neu-button-active text-white font-medium'
                             : 'text-zinc-400 hover:text-white'
                         }`}
                       >
@@ -925,10 +925,10 @@ export const InspectorPanel: React.FC = () => {
                     onClick={() =>
                       updateCalendarConfig({ weekdayItalic: !calendarConfig.weekdayItalic })
                     }
-                    className={`px-2 py-0.5 rounded text-[10px] italic border transition-all active:scale-[0.97] ${
+                    className={`px-3 py-1 rounded-xl text-[10px] italic transition-all cursor-pointer ${
                       calendarConfig.weekdayItalic
-                        ? 'bg-white text-black border-white'
-                        : 'bg-black/30 border-white/10 text-zinc-400 hover:text-white'
+                        ? 'neu-button-active text-white'
+                        : 'neu-button text-zinc-400 hover:text-white'
                     }`}
                   >
                     Italic
@@ -938,7 +938,7 @@ export const InspectorPanel: React.FC = () => {
             )}
 
             {/* Toggle button to show numbers on the date */}
-            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+            <div className="flex items-center justify-between pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="text-left">
                 <span className="font-medium text-white/90 block">Show date numbers</span>
                 <span className="text-[10px] text-zinc-500">Display 1, 2, 3... on day frames</span>
@@ -946,9 +946,7 @@ export const InspectorPanel: React.FC = () => {
               <button
                 type="button"
                 onClick={toggleDateNumbers}
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out active:scale-[0.97] ${
-                  calendarConfig.showDateNumbers ? 'bg-white' : 'bg-white/20'
-                }`}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full neu-well p-0.5 transition-colors duration-200 ease-in-out active:scale-[0.97]`}
               >
                 <motion.span
                   layout
@@ -960,8 +958,8 @@ export const InspectorPanel: React.FC = () => {
                   animate={{
                     scaleX: [1, 1.12, 1],
                   }}
-                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow ring-0 ${
-                    calendarConfig.showDateNumbers ? 'translate-x-4 bg-black' : 'translate-x-0 bg-white'
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full neu-raised shadow-md ${
+                    calendarConfig.showDateNumbers ? 'translate-x-5 text-white' : 'translate-x-0 opacity-70'
                   }`}
                 />
               </button>
@@ -992,24 +990,24 @@ export const InspectorPanel: React.FC = () => {
               {background.imageUrl ? (
                 /* When Custom Photo is Uploaded */
                 <div className="space-y-3">
-                  <div className="relative aspect-video rounded-lg overflow-hidden border border-white/10 bg-black">
+                  <div className="relative aspect-video rounded-2xl overflow-hidden neu-well border border-[var(--neu-border-highlight)]">
                     <img
                       src={background.imageUrl}
                       alt="Current Background"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
                       <button
                         type="button"
                         onClick={() => bgFileInputRef.current?.click()}
-                        className="px-2.5 py-1 rounded bg-white text-black font-medium text-[11px] hover:bg-zinc-200 transition-colors"
+                        className="px-3 py-1.5 rounded-xl neu-button text-white font-medium text-[11px] cursor-pointer"
                       >
                         Replace Photo
                       </button>
                       <button
                         type="button"
                         onClick={() => updateBackground({ imageUrl: '' })}
-                        className="px-2.5 py-1 rounded bg-white/10 text-white font-medium text-[11px] hover:bg-white/20 transition-colors"
+                        className="px-3 py-1.5 rounded-xl neu-button text-zinc-300 font-medium text-[11px] cursor-pointer"
                       >
                         Remove
                       </button>
@@ -1096,8 +1094,8 @@ export const InspectorPanel: React.FC = () => {
               ) : (
                 /* "No Image" State (Default) */
                 <div className="space-y-3">
-                  <div className="p-4 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col items-start gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70">
+                  <div className="p-4 neu-well rounded-2xl flex flex-col items-start gap-2.5 border border-[var(--neu-border-highlight)]">
+                    <div className="w-8 h-8 rounded-full neu-raised flex items-center justify-center text-white/70">
                       <ImageSquare size={16} weight="bold" />
                     </div>
                     <div className="text-left">
@@ -1109,7 +1107,7 @@ export const InspectorPanel: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => bgFileInputRef.current?.click()}
-                      className="mt-1 px-3 py-1.5 rounded-lg bg-white text-black hover:bg-zinc-200 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="mt-1 px-3.5 py-2 rounded-xl neu-button text-white font-medium text-xs flex items-center gap-1.5 cursor-pointer"
                     >
                       <UploadSimple size={14} weight="bold" />
                       <span>Upload Background Photo</span>
@@ -1124,7 +1122,7 @@ export const InspectorPanel: React.FC = () => {
                         type="color"
                         value={background.fallbackColor || '#13161e'}
                         onChange={(e) => updateBackground({ fallbackColor: e.target.value })}
-                        className="w-7 h-7 rounded border border-white/20 bg-transparent cursor-pointer"
+                        className="w-7 h-7 rounded-lg neu-well p-0.5 border border-[var(--neu-border-highlight)] cursor-pointer"
                       />
                       <span className="font-mono text-[11px] text-zinc-400 text-right tabular-nums">
                         {background.fallbackColor || '#13161e'}
@@ -1135,7 +1133,7 @@ export const InspectorPanel: React.FC = () => {
               )}
 
               {/* Analog Film Grain */}
-              <div className="space-y-2 pt-2 border-t border-white/10">
+              <div className="space-y-2 pt-3 border-t border-[var(--neu-border-highlight)]">
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="text-white/70 text-left">Analog Film Grain</span>
                   <span className="font-mono text-zinc-400 text-right tabular-nums">
@@ -1157,7 +1155,7 @@ export const InspectorPanel: React.FC = () => {
             </div>
 
             {/* Grid Position & Spacing */}
-            <div className="space-y-3 pt-3 border-t border-white/10">
+            <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
                 <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider text-left block">
                   Grid Layout & Spacing
@@ -1166,7 +1164,7 @@ export const InspectorPanel: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => updateGridPosition(0, 0)}
-                    className="text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
+                    className="neu-button px-2.5 py-1 rounded-xl text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
                   >
                     Reset Center
                   </button>

@@ -337,7 +337,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       {!isExporting && isSelected && !isInlineEditing && (
         <div
           title="Drag to reposition text (snaps to center)"
-          className="absolute -top-5 left-1/2 -translate-x-1/2 p-0.5 rounded bg-white text-black shadow flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-none z-40"
+          className="absolute -top-6 left-1/2 -translate-x-1/2 p-1 rounded-full neu-raised text-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-none z-40"
         >
           <ArrowsOutCardinal size={11} weight="bold" />
         </div>
@@ -345,7 +345,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
 
       {/* Live Dimension Tooltip while resizing */}
       {!isExporting && isSelected && liveDimensions && (
-        <div className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-[#090a0d] border border-white/30 rounded text-[10px] text-white shadow-xl pointer-events-none whitespace-nowrap z-50">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-0.5 neu-raised text-[10px] text-zinc-200 shadow-xl pointer-events-none whitespace-nowrap z-50 rounded-lg">
           W: {liveDimensions.width}px × H: {liveDimensions.height}px
         </div>
       )}
@@ -442,7 +442,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           onKeyDown={(e) => {
             if (e.key === 'Escape') setIsInlineEditing(false);
           }}
-          className="w-full bg-[#0a0c10]/95 border border-white text-white rounded-lg p-2 outline-none resize-none overflow-hidden shadow-2xl backdrop-blur-md"
+          className="w-full neu-well border border-[var(--neu-border-highlight)] text-white rounded-xl p-2.5 outline-none resize-none overflow-hidden shadow-2xl"
           style={{
             fontFamily: getFontFamilyCss(),
             fontSize: `${fontSize}px`,

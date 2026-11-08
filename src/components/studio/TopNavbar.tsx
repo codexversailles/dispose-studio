@@ -13,8 +13,8 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onOpenExport }) => {
   const selectedTextId = useEditorStore((s) => s.selectedTextId);
 
   return (
-    <header className="h-12 border-b border-white/10 bg-[#090a0d] px-4 sm:px-5 flex items-center justify-between select-none backdrop-blur-md z-30 shrink-0">
-      <span className="font-sans italic font-semibold text-lg tracking-tight text-white hover:opacity-90 transition-opacity cursor-default">
+    <header className="h-12 border-b border-[var(--neu-border-highlight)] bg-[var(--neu-panel)] px-4 sm:px-5 flex items-center justify-between select-none z-30 shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
+      <span className="font-sans italic font-semibold text-lg tracking-tight text-[var(--color-studio-text-bright)] [text-shadow:1px_1px_2px_rgba(0,0,0,0.8),-1px_-1px_1px_rgba(255,255,255,0.06)] cursor-default">
         Disposé
       </span>
 
@@ -23,17 +23,17 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onOpenExport }) => {
         <button
           type="button"
           onClick={() => setIsMobileInspectorOpen(!isMobileInspectorOpen)}
-          className={`px-2.5 py-1 rounded-lg border text-xs flex items-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer ${
+          className={`px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer ${
             isMobileInspectorOpen || selectedSlotId || selectedTextId
-              ? 'bg-white text-black border-white font-medium'
-              : 'bg-white/5 border-white/15 text-white/80 hover:text-white hover:border-white/30'
+              ? 'neu-button-active font-medium'
+              : 'neu-button text-zinc-300'
           }`}
           aria-label="Toggle Inspector Drawer"
         >
           <SlidersHorizontal size={14} weight="bold" />
           <span className="text-[11px]">Adjust</span>
           {(selectedSlotId || selectedTextId) && (
-            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75" />
           )}
         </button>
 
@@ -41,7 +41,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onOpenExport }) => {
           <button
             type="button"
             onClick={onOpenExport}
-            className="px-2.5 py-1 rounded-lg bg-white text-black border border-white active:scale-[0.97] text-[11px] font-medium flex items-center gap-1 transition-opacity hover:opacity-90 cursor-pointer"
+            className="neu-button px-3 py-1.5 rounded-xl text-[11px] font-medium flex items-center gap-1.5 cursor-pointer text-[var(--color-studio-text-bright)]"
           >
             <DownloadSimple size={14} weight="bold" />
             <span>Export</span>

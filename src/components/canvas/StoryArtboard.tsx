@@ -91,7 +91,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
       <div
         ref={ref}
         id="dumpstudio-artboard"
-        className="relative overflow-hidden shadow-2xl select-none"
+        className="relative overflow-hidden select-none shadow-[var(--neu-shadow-artboard)]"
         style={{
           width: '360px',
           height: '640px',
@@ -152,7 +152,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
           {/* Canva Drag Handle for Entire Grid */}
           {!isExporting && (
             <div
-              className="absolute -top-7 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#161a22]/95 border border-white/20 text-white/80 hover:text-white text-[9.5px] font-medium shadow-xl cursor-grab active:cursor-grabbing backdrop-blur-md z-40 touch-none"
+              className="absolute -top-7 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full neu-raised-sm text-zinc-200 hover:text-white text-[9.5px] font-medium shadow-xl cursor-grab active:cursor-grabbing z-40 touch-none active:scale-[0.97] transition-transform"
               onPointerDown={handleGridPointerDown}
               onPointerMove={handleGridPointerMove}
               onPointerUp={handleGridPointerUp}

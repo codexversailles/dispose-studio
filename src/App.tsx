@@ -80,7 +80,7 @@ export function App() {
   }, [canUndo, canRedo, undo, redo, selectedSlotId, selectSlot, selectText, clearSlot]);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#090a0d] text-white">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[var(--neu-bg)] text-[var(--color-studio-text)]">
       {/* Top Header: Just Disposé Logo (Desktop) + Quick Actions (Mobile) */}
       <TopNavbar onOpenExport={() => setIsExportOpen(true)} />
 

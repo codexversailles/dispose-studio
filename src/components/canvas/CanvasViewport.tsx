@@ -92,7 +92,7 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
   return (
     <div
       ref={containerRef}
-      className="relative flex-1 h-full w-full bg-[#0a0c10] overflow-hidden flex items-center justify-center p-2 sm:p-4 pb-18 md:pb-4 select-none touch-none"
+      className="relative flex-1 h-full w-full bg-[var(--color-studio-viewport)] overflow-hidden flex items-center justify-center p-2 sm:p-4 pb-18 md:pb-4 select-none touch-none"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -131,47 +131,47 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
 
       {/* Uploading progress notification */}
       {uploadStatus && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#181d26] border border-white/20 text-white text-xs px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 backdrop-blur-md z-40">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 neu-raised text-white text-xs px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-2 z-40">
           <CloudArrowUp size={16} weight="bold" />
           <span>{uploadStatus}</span>
         </div>
       )}
 
-      {/* Bottom Floating Zoom Controls */}
-      <div className="absolute bottom-18 md:bottom-5 right-3 md:right-5 flex items-center gap-1.5 bg-[#141820]/95 border border-white/15 px-2 py-1.5 rounded-lg backdrop-blur-md shadow-xl text-xs text-white/80 z-20">
+      {/* Bottom Floating Zoom Controls (Tactile Neumorphic) */}
+      <div className="absolute bottom-18 md:bottom-5 right-3 md:right-5 flex items-center gap-1.5 neu-raised-sm px-2 py-1.5 rounded-xl shadow-xl text-xs text-zinc-300 z-20">
         <button
           type="button"
           title="Zoom Out"
-          className="p-1 hover:bg-white/10 rounded transition-colors text-white/80 hover:text-white"
+          className="p-1 neu-button rounded-lg text-zinc-300 hover:text-white cursor-pointer"
           onClick={() => setZoomLevel(Math.max(0.4, (zoomLevel || scale) - 0.1))}
         >
-          <MagnifyingGlassMinus size={15} weight="bold" />
+          <MagnifyingGlassMinus size={14} weight="bold" />
         </button>
 
-        <span className="text-[11px] px-1 text-white/90 min-w-[36px] text-right tabular-nums">
+        <span className="neu-well text-[11px] px-2 py-0.5 rounded-md font-mono text-zinc-300 min-w-[42px] text-right tabular-nums">
           {Math.round(scale * 100)}%
         </span>
 
         <button
           type="button"
           title="Zoom In"
-          className="p-1 hover:bg-white/10 rounded transition-colors text-white/80 hover:text-white"
+          className="p-1 neu-button rounded-lg text-zinc-300 hover:text-white cursor-pointer"
           onClick={() => setZoomLevel(Math.min(2.0, (zoomLevel || scale) + 0.1))}
         >
-          <MagnifyingGlassPlus size={15} weight="bold" />
+          <MagnifyingGlassPlus size={14} weight="bold" />
         </button>
 
-        <div className="w-[1px] h-3 bg-white/15 mx-0.5" />
+        <div className="w-[1px] h-3 bg-black/50 shadow-[1px_0_0_rgba(255,255,255,0.04)] mx-0.5" />
 
         <button
           type="button"
           title="Fit to Screen"
-          className={`p-1 rounded transition-colors ${
-            zoomLevel === 0 ? 'text-black bg-white' : 'hover:bg-white/10 text-white/70 hover:text-white'
+          className={`p-1 rounded-lg cursor-pointer ${
+            zoomLevel === 0 ? 'neu-button-active text-white' : 'neu-button text-zinc-400 hover:text-white'
           }`}
           onClick={() => setZoomLevel(0)}
         >
-          <ArrowsOut size={15} weight="bold" />
+          <ArrowsOut size={14} weight="bold" />
         </button>
       </div>
     </div>

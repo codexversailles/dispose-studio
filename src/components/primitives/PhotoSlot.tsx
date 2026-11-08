@@ -306,7 +306,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
         </div>
       )}
 
-      {/* Mini floating action toolbar (only visible when selected in studio, never when exporting) */}
+      {/* Mini floating action toolbar (tactile Neumorphic pod) */}
       <AnimatePresence>
         {!isExporting && isSelected && (
           <motion.div
@@ -315,8 +315,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
             animate="animate"
             exit="exit"
             draggable={false}
-            className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#12151e]/98 border border-white/20 shadow-2xl px-1.5 py-1 rounded-lg text-white backdrop-blur-md z-50 text-xs ${
-              isTopRow ? 'top-full mt-2' : '-top-11'
+            className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 neu-raised px-2 py-1.5 rounded-2xl shadow-2xl text-white z-50 text-xs ${
+              isTopRow ? 'top-full mt-2' : '-top-12'
             }`}
             onPointerDownCapture={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
@@ -337,7 +337,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               type="button"
               draggable={false}
               title="Replace Photo"
-              className="p-1 hover:bg-white/10 active:scale-[0.97] rounded transition-all text-white/80 hover:text-white cursor-pointer"
+              className="p-1.5 neu-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               onClick={(e) => {
@@ -353,8 +353,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               type="button"
               draggable={false}
               title={hasBorder ? 'Hide Frame Border' : 'Show Frame Border'}
-              className={`p-1 rounded transition-all active:scale-[0.97] cursor-pointer ${
-                hasBorder ? 'bg-white text-black' : 'hover:bg-white/10 text-white/70 hover:text-white'
+              className={`p-1.5 rounded-xl cursor-pointer ${
+                hasBorder ? 'neu-button-active text-white' : 'neu-button text-zinc-300 hover:text-white'
               }`}
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
@@ -372,7 +372,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Reset Crop & Fit (Double-click)"
-                className="p-1 hover:bg-white/10 active:scale-[0.97] rounded transition-all text-white/80 hover:text-white cursor-pointer"
+                className="p-1.5 neu-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
@@ -390,7 +390,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Clear photo to empty border"
-                className="p-1 hover:bg-white/10 active:scale-[0.97] text-white/80 hover:text-white rounded transition-all cursor-pointer"
+                className="p-1.5 neu-button rounded-xl text-zinc-400 hover:text-white cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
