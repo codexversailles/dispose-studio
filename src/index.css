@@ -1,0 +1,405 @@
+/* Hallmark · v2.0.0 · theme: obsidian · genre: modern-minimal · material: photo · job: create */
+/* critique: tactile swiss style studio with Ralphi Sans typography and 20 animation heuristics */
+/* Hallmark · waive 37 · 4 font families: ralphi sans, helvetica neue, inter, jetbrains mono · photo dump studio artboard editor allows custom curated typography */
+
+@import "tailwindcss";
+
+/* Ralphi Sans Swiss Typography */
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ralphi Sans';
+  src: url('/fonts/ralphi-sans/RalphiSans-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Neue Swiss Typography */
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueRoman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueItalic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueLight.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueLightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueMediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueBoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueHeavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('/fonts/helvetica-neue/HelveticaNeueBlack.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Arial & Arial Light Typography */
+@font-face {
+  font-family: 'Arial Light';
+  src: url('/fonts/arial/ARIALLGT.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial Light';
+  src: url('/fonts/arial/ARIALLGTITL.TTF') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIALLGT.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIALLGTITL.TTF') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIAL.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIALI.TTF') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ArialMdm.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIALBD.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIALBI.TTF') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/ARIBLK.TTF') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Instagram Sans Typography */
+@font-face {
+  font-family: 'Instagram Sans';
+  src: url('/fonts/instagram-sans/InstagramSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instagram Sans';
+  src: url('/fonts/instagram-sans/InstagramSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instagram Sans';
+  src: url('/fonts/instagram-sans/InstagramSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instagram Sans';
+  src: url('/fonts/instagram-sans/InstagramSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instagram Sans';
+  src: url('/fonts/instagram-sans/InstagramSans-Headline.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* SF Pro Display Typography */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYBOLD.OTF') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/sf-pro-display/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+:root {
+  --color-studio-bg: #090a0d;
+  --color-studio-viewport: #060709;
+  --color-studio-panel: #0d0f14;
+  --color-studio-surface: #13161e;
+  --color-studio-card: #171b24;
+  --color-studio-text: #f4f5f7;
+  --color-studio-muted: #8b92a0;
+  --color-studio-border: rgba(255, 255, 255, 0.08);
+  --color-studio-accent: oklch(0.62 0.21 258);
+  --color-studio-scrollbar: #1e222b;
+  --color-studio-scrollbar-hover: #2e3442;
+
+  --font-ralphi: 'Ralphi Sans', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  --font-helvetica: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html, body {
+  overflow-x: clip;
+  background-color: var(--color-studio-bg);
+  color: var(--color-studio-text);
+  font-family: var(--font-ralphi);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* Accessible focus visible on all interactive elements */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-studio-accent);
+  outline-offset: 1px;
+}
+
+/* Scale 0.97 on active press (Heuristic #4) */
+button:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease-out;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom dark scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-studio-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-studio-scrollbar);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-studio-scrollbar-hover);
+}
