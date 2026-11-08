@@ -33,6 +33,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
+  const isPanningRef = useRef(false);
   const panStartRef = useRef({ x: 0, y: 0 });
   const slotStartOffsetRef = useRef({ x: 0, y: 0 });
 
@@ -76,6 +77,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     selectSlot(slotId);
 
     // Only pan if zoomed in or dragging inside
+    isPanningRef.current = true;
     setIsPanning(true);
     panStartRef.current = { x: e.clientX, y: e.clientY };
     slotStartOffsetRef.current = { x, y };
@@ -91,7 +93,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isPanning || isExporting) return;
+    if (!isPanningRef.current || isExporting) return;
     const dx = e.clientX - panStartRef.current.x;
     const dy = e.clientY - panStartRef.current.y;
 
@@ -107,7 +109,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isPanning) return;
+    if (!isPanningRef.current) return;
+    isPanningRef.current = false;
     setIsPanning(false);
 
     // Commit final drop position as a single clean undo/redo step
@@ -152,7 +155,10 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
 
   // Drag and drop handlers for replacing/filling photo or swapping
   const handleDragStart = (e: React.DragEvent) => {
-    if (isExporting || !imageUrl) return;
+    if (isExporting || !imageUrl || isPanningRef.current) {
+      e.preventDefault();
+      return;
+    }
     if ((e.target as HTMLElement).closest('.frame-action-bar') || (e.target as HTMLElement).closest('button')) {
       e.preventDefault();
       return;
@@ -261,7 +267,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
       onPointerCancel={handlePointerUp}
       onWheel={handleWheel}
       onDoubleClick={handleDoubleClick}
-      draggable={!isExporting && Boolean(imageUrl)}
+      draggable={!isExporting && Boolean(imageUrl) && !isSelected}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}

@@ -23,6 +23,9 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   const [resizingHandle, setResizingHandle] = useState<ResizeHandleType | null>(null);
   const [liveDimensions, setLiveDimensions] = useState<{ width: number; height: number } | null>(null);
 
+  const isDraggingRef = useRef(false);
+  const resizingHandleRef = useRef<ResizeHandleType | null>(null);
+
   const dragStartRef = useRef<{ clientX: number; clientY: number; startX: number; startY: number }>({
     clientX: 0,
     clientY: 0,
@@ -92,7 +95,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
 
   // Dragging text position (snaps to center)
   const handleDragPointerDown = (e: React.PointerEvent) => {
-    if (isExporting || resizingHandle) return;
+    if (isExporting || resizingHandleRef.current) return;
     e.stopPropagation();
 
     selectText(textId);
@@ -100,6 +103,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
 
+    isDraggingRef.current = true;
     setIsDragging(true);
     dragStartRef.current = {
       clientX: e.clientX,
@@ -119,7 +123,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handleDragPointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || isExporting || resizingHandle) return;
+    if (!isDraggingRef.current || isExporting || resizingHandleRef.current) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
@@ -156,7 +160,8 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handleDragPointerUp = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
     setIsDragging(false);
     setActiveSnapGuides([]);
 
@@ -197,6 +202,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     const startW = currentRect.width / scale;
     const startH = currentRect.height / scale;
 
+    resizingHandleRef.current = handle;
     setResizingHandle(handle);
     setLiveDimensions({ width: Math.round(startW), height: Math.round(startH) });
 
@@ -220,7 +226,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handleResizePointerMove = (e: React.PointerEvent) => {
-    if (!resizingHandle || isExporting) return;
+    if (!resizingHandleRef.current || isExporting) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
@@ -239,22 +245,22 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     let newY = startY;
 
     // Horizontal handle adjustments (Column Width)
-    if (resizingHandle === 'right' || resizingHandle === 'br' || resizingHandle === 'tr') {
+    if (resizingHandleRef.current === 'right' || resizingHandleRef.current === 'br' || resizingHandleRef.current === 'tr') {
       newWidth = Math.max(60, Math.min(340, startWidth + dx));
       const appliedDx = newWidth - startWidth;
       newX = Math.round(startX + appliedDx / 2);
-    } else if (resizingHandle === 'left' || resizingHandle === 'bl' || resizingHandle === 'tl') {
+    } else if (resizingHandleRef.current === 'left' || resizingHandleRef.current === 'bl' || resizingHandleRef.current === 'tl') {
       newWidth = Math.max(60, Math.min(340, startWidth - dx));
       const appliedDx = -(newWidth - startWidth);
       newX = Math.round(startX + appliedDx / 2);
     }
 
     // Vertical handle adjustments
-    if (resizingHandle === 'bottom' || resizingHandle === 'br' || resizingHandle === 'bl') {
+    if (resizingHandleRef.current === 'bottom' || resizingHandleRef.current === 'br' || resizingHandleRef.current === 'bl') {
       newHeight = Math.max(20, Math.min(420, startHeight + dy));
       const appliedDy = newHeight - startHeight;
       newY = Math.round(startY + appliedDy / 2);
-    } else if (resizingHandle === 'top' || resizingHandle === 'tr' || resizingHandle === 'tl') {
+    } else if (resizingHandleRef.current === 'top' || resizingHandleRef.current === 'tr' || resizingHandleRef.current === 'tl') {
       newHeight = Math.max(20, Math.min(420, startHeight - dy));
       const appliedDy = -(newHeight - startHeight);
       newY = Math.round(startY + appliedDy / 2);
@@ -278,7 +284,8 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handleResizePointerUp = (e: React.PointerEvent) => {
-    if (!resizingHandle) return;
+    if (!resizingHandleRef.current) return;
+    resizingHandleRef.current = null;
     setResizingHandle(null);
     setLiveDimensions(null);
 

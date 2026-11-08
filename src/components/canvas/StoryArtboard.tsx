@@ -22,6 +22,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     const updateGridPosition = useEditorStore((s) => s.updateGridPosition);
 
     const [isDraggingGrid, setIsDraggingGrid] = useState(false);
+    const isDraggingGridRef = useRef(false);
     const gridDragStart = useRef({ clientX: 0, clientY: 0, startX: 0, startY: 0 });
 
     const slotList = Object.values(slots);
@@ -30,6 +31,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     const handleGridPointerDown = (e: React.PointerEvent) => {
       if (isExporting) return;
       e.stopPropagation();
+      isDraggingGridRef.current = true;
       setIsDraggingGrid(true);
       selectGrid(true);
       gridDragStart.current = {
@@ -46,7 +48,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     };
 
     const handleGridPointerMove = (e: React.PointerEvent) => {
-      if (!isDraggingGrid || isExporting) return;
+      if (!isDraggingGridRef.current || isExporting) return;
       const artboard = document.getElementById('dumpstudio-artboard');
       if (!artboard) return;
 
@@ -83,7 +85,8 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     };
 
     const handleGridPointerUp = (e: React.PointerEvent) => {
-      if (!isDraggingGrid) return;
+      if (!isDraggingGridRef.current) return;
+      isDraggingGridRef.current = false;
       setIsDraggingGrid(false);
       setActiveSnapGuides([]);
 
