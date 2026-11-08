@@ -36,17 +36,17 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       textareaRef.current.focus();
       const len = textareaRef.current.value.length;
       textareaRef.current.setSelectionRange(len, len);
-      textareaRef.current.style.height = '0px';
-      textareaRef.current.style.height = `${Math.max(28, textareaRef.current.scrollHeight)}px`;
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [isInlineEditing]);
 
   useEffect(() => {
     if (isInlineEditing && textareaRef.current) {
-      textareaRef.current.style.height = '0px';
-      textareaRef.current.style.height = `${Math.max(28, textareaRef.current.scrollHeight)}px`;
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [textLayer?.content, textLayer?.fontSize]);
+  }, [textLayer?.content, textLayer?.fontSize, textLayer?.lineHeight]);
 
   if (!textLayer) return null;
 
@@ -193,8 +193,34 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       : 'none';
 
   const resolvedMaxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '340px';
-  const resolvedWidth = width ? `${width}px` : isInlineEditing ? '310px' : 'max-content';
+  // Keep constant width between idle, select, and edit so centered text never shifts
+  const resolvedWidth = width ? `${width}px` : resolvedMaxWidth;
   const resolvedHeight = height ? `${height}px` : 'auto';
+
+  // Single source of truth for typography and geometry across display and editing
+  const sharedTextStyle: React.CSSProperties = {
+    fontFamily: getFontFamilyCss(),
+    fontSize: `${fontSize}px`,
+    fontWeight,
+    color,
+    textAlign: align,
+    letterSpacing: `${letterSpacing}px`,
+    lineHeight: typeof lineHeight === 'number' ? lineHeight : 1.35,
+    fontStyle: italic ? 'italic' : 'normal',
+    textTransform,
+    textShadow: textShadowStyle,
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
+    overflowWrap: 'anywhere',
+    padding: 0,
+    margin: 0,
+    border: 0,
+    outline: 'none',
+    boxShadow: 'none',
+    background: 'transparent',
+    boxSizing: 'border-box',
+    width: '100%',
+  };
 
   return (
     <div
@@ -239,71 +265,37 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
             value={content}
             onChange={(e) => {
               updateText(textId, { content: e.target.value });
-              e.target.style.height = '0px';
-              e.target.style.height = `${Math.max(28, e.target.scrollHeight)}px`;
+              e.target.style.height = 'auto';
+              e.target.style.height = `${e.target.scrollHeight}px`;
             }}
             onBlur={() => setIsInlineEditing(false)}
             onKeyDown={(e) => {
               if (e.key === 'Escape') setIsInlineEditing(false);
             }}
-            className="w-full bg-transparent border-0 outline-none resize-none overflow-hidden p-0 m-0 shadow-none block selection:bg-white/20"
+            className="block resize-none overflow-hidden selection:bg-white/20"
             style={{
-              fontFamily: getFontFamilyCss(),
-              fontSize: `${fontSize}px`,
-              fontWeight,
-              color,
-              textAlign: align,
-              letterSpacing: `${letterSpacing}px`,
-              lineHeight,
-              fontStyle: italic ? 'italic' : 'normal',
-              textTransform,
-              textShadow: textShadowStyle,
-              overflowWrap: 'anywhere',
-              wordBreak: 'break-word',
+              ...sharedTextStyle,
               caretColor: color || '#ffffff',
             }}
           />
           {content.length === 0 && (
-            <span
-              className="absolute top-0 left-0 pointer-events-none select-none animate-blink font-light"
+            <div
+              className="absolute inset-0 pointer-events-none select-none animate-blink font-light"
               style={{
-                fontFamily: getFontFamilyCss(),
-                fontSize: `${fontSize}px`,
+                ...sharedTextStyle,
                 color: color || '#ffffff',
-                lineHeight,
               }}
             >
               |
-            </span>
+            </div>
           )}
         </div>
       ) : (
         <div
-          className="whitespace-pre-wrap leading-relaxed w-full cursor-text"
-          style={{
-            fontFamily: getFontFamilyCss(),
-            fontSize: `${fontSize}px`,
-            fontWeight,
-            color,
-            textAlign: align,
-            letterSpacing: `${letterSpacing}px`,
-            lineHeight,
-            fontStyle: italic ? 'italic' : 'normal',
-            textTransform,
-            textShadow: textShadowStyle,
-            overflowWrap: 'anywhere',
-            wordBreak: 'break-word',
-          }}
+          className="cursor-text"
+          style={sharedTextStyle}
         >
           {content}
-          {!isExporting && isSelected && (
-            <span
-              className="inline-block animate-blink font-light ml-0.5 select-none pointer-events-none"
-              style={{ color: color || '#ffffff' }}
-            >
-              |
-            </span>
-          )}
         </div>
       )}
     </div>
