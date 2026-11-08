@@ -152,7 +152,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
         >
           {/* Grid Boundary Highlight when Interacted or Dragged */}
           {!isExporting && (isDraggingGrid || isHandleHovered) && (
-            <div className="absolute -inset-2.5 rounded-2xl pointer-events-none ring-1.5 ring-white/80 shadow-[0_0_24px_rgba(255,255,255,0.22)] bg-white/[0.02] z-30 transition-opacity animate-in fade-in duration-150" />
+            <div className="absolute -inset-2.5 rounded-2xl pointer-events-none bg-white/[0.03] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-30 transition-opacity animate-in fade-in duration-150" />
           )}
 
           {/* Welded Drag Handle for Entire Grid (Pure Drag Icon at Top-Left) */}

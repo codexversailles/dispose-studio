@@ -348,6 +348,9 @@
   --color-studio-accent: #f0f2f7;
   --color-studio-scrollbar: #1b1f2b;
   --color-studio-scrollbar-hover: #262c3d;
+  --neu-bg: #12141c;
+  --neu-panel: #141722;
+  --neu-border-highlight: rgba(255, 255, 255, 0.04);
 
   /* Welded Continuous Chassis Material */
   --chassis-bg: #141722;
@@ -482,13 +485,13 @@ html, body {
   outline: none;
 }
 
-/* Accessible focus visible on all interactive elements */
+/* Accessible focus visible on interactive elements (subtle tone, no harsh white outlines) */
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--color-studio-accent);
-  outline-offset: 1px;
+  outline: none;
+  box-shadow: 0 0 0 1.5px var(--neu-border-focus);
 }
 
 /* Scale 0.97 on active press (Heuristic #4) */

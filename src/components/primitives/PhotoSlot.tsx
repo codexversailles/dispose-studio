@@ -223,10 +223,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   return (
     <div
       className={`relative w-full ${aspectClass} box-border transition-shadow select-none group touch-none ${
-        !isExporting && isSelected
-          ? 'outline outline-2 outline-white outline-offset-1 z-40'
-          : 'z-10'
-      } ${isDragOver ? 'outline outline-2 outline-dashed outline-white scale-[1.02] z-50' : ''}`}
+        !isExporting && isSelected ? 'z-40' : 'z-10'
+      } ${isDragOver ? 'scale-[1.02] z-50' : ''}`}
       style={{
         borderRadius: `${borderRadius}px`,
         ...borderStyle,

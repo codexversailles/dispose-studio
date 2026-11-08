@@ -120,7 +120,7 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
 
       {/* Drag & Drop Visual Overlay (Swiss Monochrome) */}
       {isDropTarget && (
-        <div className="absolute inset-4 z-50 rounded-xl border-2 border-dashed border-white bg-black/90 backdrop-blur-md flex flex-col items-center justify-center text-white pointer-events-none">
+        <div className="absolute inset-4 z-50 rounded-xl border border-dashed border-white/20 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center text-white pointer-events-none">
           <CloudArrowUp size={44} weight="bold" className="text-white mb-2" />
           <p className="text-lg font-semibold tracking-tight">Drop photos here to fill grid</p>
           <p className="text-xs text-zinc-400 mt-1">

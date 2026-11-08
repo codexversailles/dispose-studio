@@ -303,11 +303,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   return (
     <div
       ref={elementRef}
-      className={`absolute z-30 select-none box-border flex flex-col justify-center touch-none ${
-        !isExporting && isSelected
-          ? 'outline outline-1 outline-white/50'
-          : 'hover:outline hover:outline-1 hover:outline-white/20'
-      }`}
+      className="absolute z-30 select-none box-border flex flex-col justify-center touch-none"
       style={{
         left: `${currentX}px`,
         top: `${currentY}px`,
