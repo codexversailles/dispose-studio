@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useEditorStore } from '../../core/store/useEditorStore';
 import { useTemporalStore } from '../../core/hooks/useTemporalStore';
 import { compressMultipleImages } from '../../core/utils/imageCompressor';
+import { processBatchPhotos } from '../../core/utils/batchPhotoProcessor';
 import {
   UploadSimple,
   ImageSquare,
@@ -35,14 +36,44 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
   const isMobileInspectorOpen = useEditorStore((s) => s.isMobileInspectorOpen);
   const setIsMobileInspectorOpen = useEditorStore((s) => s.setIsMobileInspectorOpen);
 
+  const fillCalendarDaySlots = useEditorStore((s) => s.fillCalendarDaySlots);
+  const setDateConflictData = useEditorStore((s) => s.setDateConflictData);
+  const setRejectionNoticeData = useEditorStore((s) => s.setRejectionNoticeData);
+
   const { undo, redo, canUndo, canRedo } = useTemporalStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files);
-      const results = await compressMultipleImages(files);
-      bulkFillSlots(results.map((r) => r.blobUrl));
+      const result = await processBatchPhotos(files, calendarConfig);
+
+      if (result.status === 'non_calendar') {
+        bulkFillSlots(result.blobUrls);
+      } else if (result.status === 'all_rejected') {
+        setRejectionNoticeData({
+          rejected: result.rejected,
+          targetMonthName: result.targetMonthName,
+          targetYear: result.targetYear,
+        });
+      } else if (result.status === 'has_conflicts') {
+        setDateConflictData({
+          conflicts: result.conflicts,
+          directMatches: result.directMatches,
+          rejected: result.rejected,
+          targetMonthName: result.targetMonthName,
+          targetYear: result.targetYear,
+        });
+      } else if (result.status === 'ready') {
+        fillCalendarDaySlots(result.placements);
+        if (result.rejected.length > 0) {
+          setRejectionNoticeData({
+            rejected: result.rejected,
+            targetMonthName: result.targetMonthName,
+            targetYear: result.targetYear,
+          });
+        }
+      }
     }
     if (fileInputRef.current) fileInputRef.current.value = '';
   };

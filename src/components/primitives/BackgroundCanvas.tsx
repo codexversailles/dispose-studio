@@ -65,7 +65,7 @@ export const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ interactive 
           src={imageUrl}
           alt="Canvas Background"
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none will-change-transform"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none will-change-transform"
           style={{
             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
             transformOrigin: 'center center',

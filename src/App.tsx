@@ -6,6 +6,8 @@ import { PhotoshopToolbar } from './components/studio/PhotoshopToolbar';
 import { CanvasViewport } from './components/canvas/CanvasViewport';
 import { InspectorPanel } from './components/studio/InspectorPanel';
 import { ExportModal } from './components/studio/ExportModal';
+import { DateConflictModal } from './components/studio/DateConflictModal';
+import { RejectionNoticeModal } from './components/studio/RejectionNoticeModal';
 
 export function App() {
   const artboardRef = useRef<HTMLDivElement>(null);
@@ -97,6 +99,12 @@ export function App() {
         onClose={() => setIsExportOpen(false)}
         artboardElement={artboardRef.current}
       />
+
+      {/* Date Conflict Resolution Floating Window */}
+      <DateConflictModal />
+
+      {/* Month/Year Mismatch Rejection Floating Notice */}
+      <RejectionNoticeModal />
     </div>
   );
 }

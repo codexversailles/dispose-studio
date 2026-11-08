@@ -270,14 +270,14 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
       {/* Frame Content */}
       {imageUrl && frameStyle === 'photo' ? (
         <div
-          className="w-full h-full overflow-hidden relative"
+          className="w-full h-full overflow-hidden relative flex items-center justify-center bg-black/30"
           style={{ borderRadius: `${borderRadius}px` }}
         >
           <img
             src={imageUrl}
             alt=""
             draggable={false}
-            className="w-full h-full object-cover will-change-transform pointer-events-none select-none"
+            className="w-full h-full object-contain will-change-transform pointer-events-none select-none"
             style={{
               transform: `scale(${scale}) translate(${x}%, ${y}%)`,
               transformOrigin: 'center center',

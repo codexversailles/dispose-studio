@@ -241,7 +241,7 @@ export const InspectorPanel: React.FC = () => {
                   <img
                     src={activeSlot.imageUrl}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     style={{
                       transform: `scale(${activeSlot.scale}) translate(${activeSlot.x}%, ${activeSlot.y}%)`,
                     }}
@@ -1031,7 +1031,7 @@ export const InspectorPanel: React.FC = () => {
                     <img
                       src={background.imageUrl}
                       alt="Current Background"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
                       <button

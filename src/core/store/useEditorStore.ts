@@ -13,6 +13,11 @@ import {
 } from '../types/template';
 import { getTemplateById, DEFAULT_TEMPLATE_ID } from '../../templates';
 import { generateCalendarSlots, MONTH_NAMES } from '../utils/calendarGenerator';
+import {
+  DateConflictDay,
+  ProcessedPhotoItem,
+  RejectedPhotoItem,
+} from '../utils/batchPhotoProcessor';
 
 const IDB_STATE_KEY = 'dumpstudio_project_state_v2';
 
@@ -37,6 +42,37 @@ export interface EditorState {
   isMobileInspectorOpen: boolean;
   isGridSelected: boolean;
 
+  // Date Conflict & Rejection Floating Modals (UI state)
+  dateConflictData: {
+    conflicts: DateConflictDay[];
+    directMatches: Record<number, ProcessedPhotoItem>;
+    rejected: RejectedPhotoItem[];
+    targetMonthName: string;
+    targetYear: number;
+  } | null;
+  setDateConflictData: (
+    data: {
+      conflicts: DateConflictDay[];
+      directMatches: Record<number, ProcessedPhotoItem>;
+      rejected: RejectedPhotoItem[];
+      targetMonthName: string;
+      targetYear: number;
+    } | null
+  ) => void;
+
+  rejectionNoticeData: {
+    rejected: RejectedPhotoItem[];
+    targetMonthName: string;
+    targetYear: number;
+  } | null;
+  setRejectionNoticeData: (
+    data: {
+      rejected: RejectedPhotoItem[];
+      targetMonthName: string;
+      targetYear: number;
+    } | null
+  ) => void;
+
   // Actions
   setIsMobileInspectorOpen: (open: boolean) => void;
   selectGrid: (selected: boolean) => void;
@@ -52,6 +88,8 @@ export interface EditorState {
   toggleSlotBorder: (slotId: string) => void;
   setSlotFrameStyle: (slotId: string, frameStyle: FrameStyle) => void;
   bulkFillSlots: (imageUrls: string[]) => void;
+  fillCalendarDaySlots: (placements: Record<number, string>) => void;
+  confirmDateConflictPlacements: (resolvedPlacements: Record<number, string>) => void;
   shufflePhotos: () => void;
   updateText: (textId: string, partial: Partial<TextLayerState>) => void;
   updateTextPosition: (textId: string, x: number, y: number) => void;
@@ -145,6 +183,11 @@ export const useEditorStore = create<EditorState>()(
       activeSnapGuides: [],
       isMobileInspectorOpen: false,
       isGridSelected: false,
+      dateConflictData: null,
+      rejectionNoticeData: null,
+
+      setDateConflictData: (data) => set({ dateConflictData: data }),
+      setRejectionNoticeData: (data) => set({ rejectionNoticeData: data }),
 
       setTemplate: (templateId: string) => {
         const tmpl = getTemplateById(templateId);
@@ -435,6 +478,52 @@ export const useEditorStore = create<EditorState>()(
 
           return { slots: updatedSlots };
         });
+      },
+
+      fillCalendarDaySlots: (placements: Record<number, string>) => {
+        set((state) => {
+          const updatedSlots = { ...state.slots };
+          let changed = false;
+
+          Object.entries(placements).forEach(([dayStr, blobUrl]) => {
+            const slot = Object.values(updatedSlots).find(
+              (s) => s.label === dayStr && s.frameStyle !== 'hidden'
+            );
+            if (slot) {
+              updatedSlots[slot.id] = {
+                ...slot,
+                imageUrl: blobUrl,
+                frameStyle: 'photo',
+                hasBorder: false,
+                scale: 1.0,
+                x: 0,
+                y: 0,
+              };
+              changed = true;
+            }
+          });
+
+          return changed ? { slots: updatedSlots } : {};
+        });
+      },
+
+      confirmDateConflictPlacements: (resolvedPlacements: Record<number, string>) => {
+        const pendingRejected = get().dateConflictData?.rejected;
+        const targetMonthName = get().dateConflictData?.targetMonthName;
+        const targetYear = get().dateConflictData?.targetYear;
+
+        get().fillCalendarDaySlots(resolvedPlacements);
+        set({ dateConflictData: null });
+
+        if (pendingRejected && pendingRejected.length > 0 && targetMonthName && targetYear) {
+          set({
+            rejectionNoticeData: {
+              rejected: pendingRejected,
+              targetMonthName,
+              targetYear,
+            },
+          });
+        }
       },
 
       shufflePhotos: () => {
