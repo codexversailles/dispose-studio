@@ -21,6 +21,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     const updateGridPosition = useEditorStore((s) => s.updateGridPosition);
 
     const [isDraggingGrid, setIsDraggingGrid] = useState(false);
+    const [isHandleHovered, setIsHandleHovered] = useState(false);
     const gridDragStart = useRef({ clientX: 0, clientY: 0, startX: 0, startY: 0 });
 
     const slotList = Object.values(slots);
@@ -149,18 +150,29 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
             transform: `translate(${gridX}px, ${gridY}px)`,
           }}
         >
-          {/* Canva Drag Handle for Entire Grid */}
+          {/* Grid Boundary Highlight when Interacted or Dragged */}
+          {!isExporting && (isDraggingGrid || isHandleHovered) && (
+            <div className="absolute -inset-2.5 rounded-2xl pointer-events-none ring-1.5 ring-white/80 shadow-[0_0_24px_rgba(255,255,255,0.22)] bg-white/[0.02] z-30 transition-opacity animate-in fade-in duration-150" />
+          )}
+
+          {/* Welded Drag Handle for Entire Grid (Pure Drag Icon) */}
           {!isExporting && (
             <div
-              className="absolute -top-7 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full neu-raised-sm text-zinc-200 hover:text-white text-[9.5px] font-medium shadow-xl cursor-grab active:cursor-grabbing z-40 touch-none active:scale-[0.97] transition-transform"
+              className={`absolute -top-7 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none transition-all ${
+                isDraggingGrid
+                  ? 'weld-button-active text-white scale-110'
+                  : 'weld-button text-zinc-300 hover:text-white'
+              }`}
               onPointerDown={handleGridPointerDown}
               onPointerMove={handleGridPointerMove}
               onPointerUp={handleGridPointerUp}
               onPointerCancel={handleGridPointerUp}
-              title="Click and drag to reposition entire photo grid (snaps to center)"
+              onMouseEnter={() => setIsHandleHovered(true)}
+              onMouseLeave={() => setIsHandleHovered(false)}
+              title="Drag to reposition photo grid (snaps to center)"
+              aria-label="Reposition Grid"
             >
-              <DotsSixVertical size={13} weight="bold" />
-              <span>Drag Grid</span>
+              <DotsSixVertical size={16} weight="bold" />
             </div>
           )}
 

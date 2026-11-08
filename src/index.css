@@ -339,8 +339,8 @@
   --color-studio-bg: #12141c;
   --color-studio-viewport: #0e1017;
   --color-studio-panel: #141722;
-  --color-studio-surface: #171b26;
-  --color-studio-card: #181c28;
+  --color-studio-surface: #141722;
+  --color-studio-card: #141722;
   --color-studio-text: #f0f2f5;
   --color-studio-text-bright: #f8f9fb;
   --color-studio-muted: #8e95a5;
@@ -349,30 +349,47 @@
   --color-studio-scrollbar: #1b1f2b;
   --color-studio-scrollbar-hover: #262c3d;
 
-  /* Neumorphic Tone Scale */
-  --neu-bg: #12141c;
-  --neu-panel: #141722;
-  --neu-surface: #171b26;
-  --neu-surface-convex: linear-gradient(145deg, #191e2b, #151822);
-  --neu-surface-concave: linear-gradient(145deg, #131620, #191d29);
-  --neu-surface-pressed: linear-gradient(145deg, #0f121a, #151923);
-  --neu-well: #0e1118;
-  --neu-border-highlight: rgba(255, 255, 255, 0.04);
-  --neu-border-dark: rgba(0, 0, 0, 0.35);
-  --neu-border-dark-sm: rgba(0, 0, 0, 0.25);
-  --neu-border-subtle: rgba(255, 255, 255, 0.03);
-  --neu-border-focus: rgba(255, 255, 255, 0.12);
-  --neu-shadow-dark: rgba(0, 0, 0, 0.55);
-  --neu-shadow-light: rgba(255, 255, 255, 0.03);
+  /* Welded Continuous Chassis Material */
+  --chassis-bg: #141722;
+  --chassis-shadow-dark: #07080d;
+  --chassis-shadow-light: rgba(255, 255, 255, 0.05);
+  --chassis-rim-light: rgba(255, 255, 255, 0.08);
+  --chassis-lip-light: rgba(255, 255, 255, 0.04);
 
-  --neu-shadow-raised: 7px 7px 16px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
-  --neu-shadow-raised-sm: 4px 4px 10px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light);
-  --neu-shadow-raised-hover: 9px 9px 20px rgba(0, 0, 0, 0.65), -5px -5px 12px rgba(255, 255, 255, 0.045);
-  --neu-shadow-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.65), inset -2px -2px 5px rgba(255, 255, 255, 0.025);
-  --neu-shadow-inset-sm: inset 2px 2px 4px rgba(0, 0, 0, 0.6), inset -1px -1px 3px rgba(255, 255, 255, 0.02);
-  --neu-shadow-well: inset 3px 3px 8px rgba(0, 0, 0, 0.75), inset -2px -2px 6px rgba(255, 255, 255, 0.025);
-  --neu-shadow-focus: inset 2px 2px 5px rgba(0, 0, 0, 0.8), inset -1px -1px 3px rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  /* Extruded out of the chassis */
+  --weld-extruded: 
+    4px 4px 10px var(--chassis-shadow-dark), 
+    -4px -4px 10px var(--chassis-shadow-light),
+    inset 1px 1px 0px var(--chassis-rim-light);
+
+  /* Keycaps & tight buttons */
+  --weld-keycap: 
+    3px 3px 6px var(--chassis-shadow-dark), 
+    -3px -3px 6px var(--chassis-shadow-light),
+    inset 1px 1px 0px var(--chassis-rim-light);
+
+  --weld-keycap-hover: 
+    4px 4px 9px var(--chassis-shadow-dark), 
+    -4px -4px 9px var(--chassis-shadow-light),
+    inset 1px 1px 0px var(--chassis-rim-light);
+
+  /* Recessed Well carved into the chassis */
+  --weld-recessed: 
+    inset 4px 4px 8px var(--chassis-shadow-dark), 
+    inset -4px -4px 8px var(--chassis-shadow-light),
+    1px 1px 0px var(--chassis-lip-light);
+
+  /* Depressed / Active pushed into the chassis */
+  --weld-pressed: 
+    inset 3px 3px 6px var(--chassis-shadow-dark), 
+    inset -3px -3px 6px var(--chassis-shadow-light);
+
+  --weld-pressed-sm: 
+    inset 2px 2px 4px var(--chassis-shadow-dark), 
+    inset -2px -2px 4px var(--chassis-shadow-light);
+
   --neu-shadow-artboard: 18px 18px 45px rgba(0, 0, 0, 0.75), -8px -8px 25px rgba(255, 255, 255, 0.025);
+  --neu-border-focus: rgba(255, 255, 255, 0.12);
 
   --font-ralphi: 'Ralphi Sans', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   --font-helvetica: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
@@ -390,79 +407,78 @@ html, body {
   user-select: none;
 }
 
-/* Neumorphic Tactical Surfaces */
-.neu-raised {
-  background: var(--neu-surface-convex);
-  box-shadow: var(--neu-shadow-raised);
-  border: 1px solid var(--neu-border-highlight);
-}
-
-.neu-raised-sm {
-  background: var(--neu-surface-convex);
-  box-shadow: var(--neu-shadow-raised-sm);
-  border: 1px solid var(--neu-border-highlight);
-}
-
-.neu-raised-flat {
-  background: var(--neu-surface);
-  box-shadow: var(--neu-shadow-raised);
-  border: 1px solid var(--neu-border-highlight);
-}
-
-.neu-pressed {
-  background: var(--neu-surface-pressed);
-  box-shadow: var(--neu-shadow-inset);
-  border: 1px solid var(--neu-border-dark);
-}
-
-.neu-pressed-sm {
-  background: var(--neu-surface-pressed);
-  box-shadow: var(--neu-shadow-inset-sm);
-  border: 1px solid var(--neu-border-dark-sm);
-}
-
-.neu-well {
-  background: var(--neu-well);
-  box-shadow: var(--neu-shadow-well);
-  border: 1px solid var(--neu-border-dark);
-}
-
+/* Welded Neumorphic System (Single Continuous Material, Zero Floating Seams) */
+.weld-button,
 .neu-button {
-  background: var(--neu-surface-convex);
-  box-shadow: var(--neu-shadow-raised-sm);
-  border: 1px solid var(--neu-border-highlight);
+  background-color: inherit;
+  box-shadow: var(--weld-keycap);
+  border: 0;
   color: var(--color-studio-text);
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, color 0.12s ease-out;
 }
 
+.weld-button:hover:not(:disabled),
 .neu-button:hover:not(:disabled) {
-  box-shadow: var(--neu-shadow-raised-hover);
+  box-shadow: var(--weld-keycap-hover);
+  color: var(--color-studio-text-bright);
 }
 
+.weld-button:active:not(:disabled),
 .neu-button:active:not(:disabled) {
   transform: scale(0.97);
-  background: var(--neu-surface-pressed);
-  box-shadow: var(--neu-shadow-inset-sm);
+  box-shadow: var(--weld-pressed);
 }
 
+.weld-button-active,
 .neu-button-active {
-  background: var(--neu-surface-pressed) !important;
-  box-shadow: var(--neu-shadow-inset) !important;
-  border-color: var(--neu-border-dark) !important;
+  background-color: inherit !important;
+  box-shadow: var(--weld-pressed) !important;
+  border: 0 !important;
   color: var(--color-studio-text-bright) !important;
 }
 
-.neu-input {
-  background: var(--neu-well);
-  box-shadow: var(--neu-shadow-inset-sm);
-  border: 1px solid var(--neu-border-subtle);
-  color: var(--color-studio-text);
-  transition: box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+.weld-well,
+.neu-well {
+  background-color: inherit;
+  box-shadow: var(--weld-recessed);
+  border: 0;
 }
 
+.weld-extruded,
+.neu-raised,
+.neu-raised-sm,
+.neu-raised-flat {
+  background-color: inherit;
+  box-shadow: var(--weld-extruded);
+  border: 0;
+}
+
+.weld-pressed,
+.neu-pressed {
+  background-color: inherit;
+  box-shadow: var(--weld-pressed);
+  border: 0;
+}
+
+.weld-pressed-sm,
+.neu-pressed-sm {
+  background-color: inherit;
+  box-shadow: var(--weld-pressed-sm);
+  border: 0;
+}
+
+.weld-input,
+.neu-input {
+  background-color: inherit;
+  box-shadow: var(--weld-pressed-sm);
+  border: 0;
+  color: var(--color-studio-text);
+  transition: box-shadow 0.15s ease-out;
+}
+
+.weld-input:focus,
 .neu-input:focus {
-  border-color: var(--neu-border-focus);
-  box-shadow: var(--neu-shadow-focus);
+  box-shadow: var(--weld-pressed), 0 0 0 1px var(--neu-border-focus);
   outline: none;
 }
 
