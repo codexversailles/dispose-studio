@@ -146,6 +146,16 @@ export const useEditorStore = create<EditorState>()(
         set((state) => {
           const newGrid = { ...state.gridConfig, ...partial };
           let updatedSlots = state.slots;
+          let updatedCalendar = state.calendarConfig;
+
+          // Keep weekdays header color in sync with grid border color
+          if (partial.borderColor !== undefined && updatedCalendar) {
+            updatedCalendar = {
+              ...updatedCalendar,
+              weekdayColor: partial.borderColor,
+            };
+          }
+
           if (partial.borderColor !== undefined || partial.borderWidth !== undefined) {
             updatedSlots = {};
             for (const [id, slot] of Object.entries(state.slots)) {
@@ -159,14 +169,38 @@ export const useEditorStore = create<EditorState>()(
           return {
             gridConfig: newGrid,
             slots: updatedSlots,
+            calendarConfig: updatedCalendar,
           };
         });
       },
 
       updateCalendarConfig: (partial) => {
-        set((state) => ({
-          calendarConfig: { ...state.calendarConfig, ...partial },
-        }));
+        set((state) => {
+          const newCalendar = { ...state.calendarConfig, ...partial };
+          let newGrid = state.gridConfig;
+          let updatedSlots = state.slots;
+
+          // If weekdayColor is updated directly, synchronize grid borderColor and slots
+          if (partial.weekdayColor !== undefined) {
+            newGrid = {
+              ...state.gridConfig,
+              borderColor: partial.weekdayColor,
+            };
+            updatedSlots = {};
+            for (const [id, slot] of Object.entries(state.slots)) {
+              updatedSlots[id] = {
+                ...slot,
+                borderColor: partial.weekdayColor,
+              };
+            }
+          }
+
+          return {
+            calendarConfig: newCalendar,
+            gridConfig: newGrid,
+            slots: updatedSlots,
+          };
+        });
       },
 
       toggleDateNumbers: () => {
@@ -485,9 +519,15 @@ export const useEditorStore = create<EditorState>()(
           preserveStyles,
         });
 
+        const currentBorderColor = state.gridConfig.borderColor || '#ffffff';
+        const currentBorderWidth = state.gridConfig.borderWidth || 1.5;
         const newSlotsMap: Record<string, SlotState> = {};
         generated.forEach((s) => {
-          newSlotsMap[s.id] = s;
+          newSlotsMap[s.id] = {
+            ...s,
+            borderColor: currentBorderColor,
+            borderWidth: currentBorderWidth,
+          };
         });
 
         const monthName = MONTH_NAMES[month - 1] || 'month';

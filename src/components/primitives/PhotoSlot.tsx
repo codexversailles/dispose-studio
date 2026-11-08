@@ -296,8 +296,11 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
           {/* Optional day label inside photo (controlled by toggle) */}
           {showDateNumbers && label && (
             <span
-              className="absolute top-1 left-1.5 text-[8.5px] font-mono font-medium drop-shadow-md select-none pointer-events-none text-white opacity-85"
-              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}
+              className="absolute top-1 left-1.5 text-[8.5px] font-mono font-medium drop-shadow-md select-none pointer-events-none opacity-85"
+              style={{
+                color: borderColor || gridBorderColor || '#ffffff',
+                textShadow: '0 1px 2px rgba(0,0,0,0.85)',
+              }}
             >
               {label}
             </span>
@@ -315,8 +318,11 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
         >
           {showDateNumbers && label && (
             <span
-              className="absolute top-1 left-1.5 text-[8.5px] font-mono font-medium opacity-70 text-white select-none pointer-events-none"
-              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}
+              className="absolute top-1 left-1.5 text-[8.5px] font-mono font-medium opacity-80 select-none pointer-events-none"
+              style={{
+                color: borderColor || gridBorderColor || '#ffffff',
+                textShadow: '0 1px 2px rgba(0,0,0,0.85)',
+              }}
             >
               {label}
             </span>

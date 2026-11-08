@@ -928,6 +928,25 @@ export const InspectorPanel: React.FC = () => {
                     Italic
                   </button>
                 </div>
+
+                {/* Weekday Header Color (Synchronized with Grid) */}
+                <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[var(--neu-border-highlight)]">
+                  <span className="text-zinc-400 text-left">Header color</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-zinc-400 text-xs uppercase">
+                      {calendarConfig.weekdayColor || gridConfig.borderColor || '#ffffff'}
+                    </span>
+                    <input
+                      type="color"
+                      value={calendarConfig.weekdayColor || gridConfig.borderColor || '#ffffff'}
+                      onChange={(e) =>
+                        updateCalendarConfig({ weekdayColor: e.target.value })
+                      }
+                      className="w-5 h-5 rounded-md border-0 p-0 cursor-pointer bg-transparent"
+                      title="Weekday Header & Grid Color"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1181,7 +1200,7 @@ export const InspectorPanel: React.FC = () => {
               {/* Grid Border Color Option */}
               <div className="space-y-2 pt-1">
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-white/70 text-left">Grid Border Color</span>
+                  <span className="text-white/70 text-left">Grid & Weekdays Color</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-zinc-400 text-xs uppercase">
                       {gridConfig.borderColor || '#ffffff'}
@@ -1191,7 +1210,7 @@ export const InspectorPanel: React.FC = () => {
                       value={gridConfig.borderColor || '#ffffff'}
                       onChange={(e) => updateGridConfig({ borderColor: e.target.value })}
                       className="w-5 h-5 rounded-md border-0 p-0 cursor-pointer bg-transparent"
-                      title="Custom Color"
+                      title="Custom Color (Grid & Weekdays)"
                     />
                   </div>
                 </div>

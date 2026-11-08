@@ -226,7 +226,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
                         : "'Arial Light', Arial, sans-serif",
                     fontWeight: calendarConfig.weekdayFontWeight || 500,
                     fontSize: `${calendarConfig.weekdayFontSize || 9.5}px`,
-                    color: calendarConfig.weekdayColor || '#ffffff',
+                    color: calendarConfig.weekdayColor || gridConfig.borderColor || '#ffffff',
                     letterSpacing: `${calendarConfig.weekdayLetterSpacing ?? 0.3}px`,
                     textTransform: calendarConfig.weekdayTransform || 'capitalize',
                     fontStyle: calendarConfig.weekdayItalic ? 'italic' : 'normal',
