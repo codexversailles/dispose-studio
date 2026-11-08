@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useEditorStore } from '../../core/store/useEditorStore';
 import { SnapGuide } from '../../core/types/template';
-import { Move } from 'lucide-react';
+import { ArrowsOutCardinal } from '@phosphor-icons/react';
 
 interface EditableTextLayerProps {
   textId: string;
@@ -304,7 +304,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       ref={elementRef}
       className={`absolute z-30 transition-shadow select-none box-border flex flex-col justify-center touch-none ${
         !isExporting && isSelected
-          ? 'ring-1 ring-blue-500/90 bg-blue-500/10 rounded px-1.5 py-1 cursor-grab active:cursor-grabbing'
+          ? 'outline outline-1 outline-white/80 bg-white/[0.04] rounded px-1.5 py-1 cursor-grab active:cursor-grabbing'
           : 'hover:outline hover:outline-1 hover:outline-white/30 rounded px-1.5 py-1 cursor-grab'
       }`}
       style={{
@@ -337,15 +337,15 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       {!isExporting && isSelected && !isInlineEditing && (
         <div
           title="Drag to reposition text (snaps to center)"
-          className="absolute -top-5 left-1/2 -translate-x-1/2 p-0.5 rounded bg-blue-600 text-white shadow flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-none z-40"
+          className="absolute -top-5 left-1/2 -translate-x-1/2 p-0.5 rounded bg-white text-black shadow flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-none z-40"
         >
-          <Move className="w-2.5 h-2.5" />
+          <ArrowsOutCardinal size={11} weight="bold" />
         </div>
       )}
 
       {/* Live Dimension Tooltip while resizing */}
       {!isExporting && isSelected && liveDimensions && (
-        <div className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-[#090a0d] border border-blue-500/80 rounded text-[10px] font-mono text-blue-300 shadow-xl pointer-events-none whitespace-nowrap z-50">
+        <div className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-[#090a0d] border border-white/30 rounded text-[10px] text-white shadow-xl pointer-events-none whitespace-nowrap z-50">
           W: {liveDimensions.width}px × H: {liveDimensions.height}px
         </div>
       )}
@@ -356,7 +356,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           {/* Left Edge Handle (Width) */}
           <div
             title="Drag to resize column width"
-            className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-blue-600 rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'left')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -366,7 +366,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           {/* Right Edge Handle (Width) */}
           <div
             title="Drag to resize column width"
-            className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-blue-600 rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'right')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -376,7 +376,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           {/* Top Edge Handle (Height) */}
           <div
             title="Drag to resize column height"
-            className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-blue-600 rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-black rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'top')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -386,7 +386,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           {/* Bottom Edge Handle (Height) */}
           <div
             title="Drag to resize column height"
-            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-blue-600 rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-black rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'bottom')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -396,7 +396,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           {/* Corner Handles */}
           <div
             title="Drag to resize"
-            className="absolute -top-1.5 -left-1.5 w-2.5 h-2.5 bg-white border-2 border-blue-600 rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -top-1.5 -left-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'tl')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -404,7 +404,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           />
           <div
             title="Drag to resize"
-            className="absolute -top-1.5 -right-1.5 w-2.5 h-2.5 bg-white border-2 border-blue-600 rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -top-1.5 -right-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'tr')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -412,7 +412,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           />
           <div
             title="Drag to resize"
-            className="absolute -bottom-1.5 -left-1.5 w-2.5 h-2.5 bg-white border-2 border-blue-600 rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -bottom-1.5 -left-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'bl')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -420,7 +420,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           />
           <div
             title="Drag to resize"
-            className="absolute -bottom-1.5 -right-1.5 w-2.5 h-2.5 bg-white border-2 border-blue-600 rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
+            className="absolute -bottom-1.5 -right-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
             onPointerDown={(e) => handleResizePointerDown(e, 'br')}
             onPointerMove={handleResizePointerMove}
             onPointerUp={handleResizePointerUp}
@@ -442,7 +442,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           onKeyDown={(e) => {
             if (e.key === 'Escape') setIsInlineEditing(false);
           }}
-          className="w-full bg-[#0a0c10]/95 border-2 border-blue-500 text-white rounded-lg p-2 outline-none resize-none overflow-hidden text-center shadow-2xl backdrop-blur-md"
+          className="w-full bg-[#0a0c10]/95 border border-white text-white rounded-lg p-2 outline-none resize-none overflow-hidden shadow-2xl backdrop-blur-md"
           style={{
             fontFamily: getFontFamilyCss(),
             fontSize: `${fontSize}px`,
@@ -459,7 +459,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         />
       ) : (
         <div
-          className="whitespace-pre-wrap leading-relaxed text-center w-full"
+          className="whitespace-pre-wrap leading-relaxed w-full"
           style={{
             fontFamily: getFontFamilyCss(),
             fontSize: `${fontSize}px`,

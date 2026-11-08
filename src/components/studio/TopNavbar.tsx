@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEditorStore } from '../../core/store/useEditorStore';
-import { Sliders, Download } from 'lucide-react';
+import { SlidersHorizontal, DownloadSimple } from '@phosphor-icons/react';
 
 interface TopNavbarProps {
   onOpenExport?: () => void;
@@ -23,17 +23,17 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onOpenExport }) => {
         <button
           type="button"
           onClick={() => setIsMobileInspectorOpen(!isMobileInspectorOpen)}
-          className={`px-2.5 py-1 rounded-lg border text-xs flex items-center gap-1.5 transition-all active:scale-[0.94] cursor-pointer ${
+          className={`px-2.5 py-1 rounded-lg border text-xs flex items-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer ${
             isMobileInspectorOpen || selectedSlotId || selectedTextId
-              ? 'bg-blue-600/30 border-blue-500/70 text-blue-200'
-              : 'bg-white/5 border-white/10 text-white/70 hover:text-white'
+              ? 'bg-white text-black border-white font-medium'
+              : 'bg-white/5 border-white/15 text-white/80 hover:text-white hover:border-white/30'
           }`}
           aria-label="Toggle Inspector Drawer"
         >
-          <Sliders className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-[11px] font-medium">Adjust</span>
+          <SlidersHorizontal size={14} weight="bold" />
+          <span className="text-[11px]">Adjust</span>
           {(selectedSlotId || selectedTextId) && (
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span className="w-1.5 h-1.5 rounded-full bg-current" />
           )}
         </button>
 
@@ -41,9 +41,9 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onOpenExport }) => {
           <button
             type="button"
             onClick={onOpenExport}
-            className="px-2.5 py-1 rounded-lg bg-blue-600 active:scale-[0.94] text-white text-[11px] font-semibold flex items-center gap-1 shadow-md shadow-blue-600/30 cursor-pointer"
+            className="px-2.5 py-1 rounded-lg bg-white text-black border border-white active:scale-[0.97] text-[11px] font-medium flex items-center gap-1 transition-opacity hover:opacity-90 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
+            <DownloadSimple size={14} weight="bold" />
             <span>Export</span>
           </button>
         )}

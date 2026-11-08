@@ -3,16 +3,16 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { useTemporalStore } from '../../core/hooks/useTemporalStore';
 import { compressMultipleImages } from '../../core/utils/imageCompressor';
 import {
-  Upload,
-  Image as ImageIcon,
-  Calendar,
+  UploadSimple,
+  ImageSquare,
+  CalendarBlank,
   Shuffle,
-  Undo2,
-  Redo2,
-  RotateCcw,
-  Download,
-  Sliders,
-} from 'lucide-react';
+  ArrowCounterClockwise,
+  ArrowClockwise,
+  ArrowsClockwise,
+  DownloadSimple,
+  SlidersHorizontal,
+} from '@phosphor-icons/react';
 
 interface PhotoshopToolbarProps {
   onOpenExport: () => void;
@@ -71,13 +71,14 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:scale-[0.94] transition-all cursor-pointer"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.97] transition-all cursor-pointer"
               aria-label="Add Photos"
             >
-              <Upload className="w-4 h-4 text-blue-400" />
+              <UploadSimple size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Add Photos <span className="text-amber-300 font-mono text-[9px]">(4K Bulk)</span>
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl flex items-center justify-between gap-3 text-left">
+              <span>Add photos</span>
+              <span className="text-zinc-400 text-[10px] text-right">4K</span>
             </div>
           </div>
 
@@ -90,17 +91,17 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
                 selectText(null);
                 setActiveInspectorTab('canvas');
               }}
-              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all active:scale-[0.94] cursor-pointer ${
+              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all active:scale-[0.97] cursor-pointer ${
                 isCanvasBackgroundActive
-                  ? 'bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/50'
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-white text-black'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
               }`}
               aria-label="Background Settings"
             >
-              <ImageIcon className="w-4 h-4 text-amber-400" />
+              <ImageSquare size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Background Settings
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl text-left">
+              Background settings
             </div>
           </div>
 
@@ -110,26 +111,22 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
               <button
                 type="button"
                 onClick={toggleDateNumbers}
-                className={`w-9 h-9 rounded-lg relative flex items-center justify-center transition-all active:scale-[0.94] cursor-pointer ${
+                className={`w-9 h-9 rounded-lg relative flex items-center justify-center transition-all active:scale-[0.97] cursor-pointer ${
                   calendarConfig.showDateNumbers
-                    ? 'bg-blue-600/25 text-blue-200 ring-1 ring-blue-500/50'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    ? 'bg-white text-black'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
                 aria-label="Toggle Date Numbers"
               >
-                <Calendar className="w-4 h-4 text-blue-400" />
+                <CalendarBlank size={18} weight="bold" />
                 {calendarConfig.showDateNumbers && (
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 ring-1 ring-[#0c0e14]" />
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-black ring-1 ring-white" />
                 )}
               </button>
-              <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-                Date Numbers{' '}
-                <span
-                  className={`font-mono text-[9px] px-1 py-0.2 rounded ${
-                    calendarConfig.showDateNumbers ? 'bg-blue-600 text-white' : 'bg-white/10 text-white/50'
-                  }`}
-                >
-                  {calendarConfig.showDateNumbers ? 'ON' : 'OFF'}
+              <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl flex items-center justify-between gap-3 text-left">
+                <span>Date numbers</span>
+                <span className="text-zinc-400 text-[10px] text-right">
+                  {calendarConfig.showDateNumbers ? 'On' : 'Off'}
                 </span>
               </div>
             </div>
@@ -140,13 +137,13 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             <button
               type="button"
               onClick={shufflePhotos}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:scale-[0.94] transition-all cursor-pointer"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.97] transition-all cursor-pointer"
               aria-label="Shuffle Photos"
             >
-              <Shuffle className="w-4 h-4" />
+              <Shuffle size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Shuffle Photos
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl text-left">
+              Shuffle photos
             </div>
           </div>
 
@@ -159,13 +156,14 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
               type="button"
               disabled={!canUndo}
               onClick={() => undo()}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:scale-[0.94] disabled:opacity-25 disabled:hover:bg-transparent transition-all cursor-pointer disabled:cursor-not-allowed"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.97] disabled:opacity-25 disabled:hover:bg-transparent transition-all cursor-pointer disabled:cursor-not-allowed"
               aria-label="Undo"
             >
-              <Undo2 className="w-4 h-4" />
+              <ArrowCounterClockwise size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Undo <span className="text-white/40 font-mono text-[9px]">(Ctrl+Z)</span>
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl flex items-center justify-between gap-3 text-left">
+              <span>Undo</span>
+              <span className="text-zinc-400 text-[10px] text-right">Ctrl+Z</span>
             </div>
           </div>
 
@@ -175,13 +173,14 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
               type="button"
               disabled={!canRedo}
               onClick={() => redo()}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:scale-[0.94] disabled:opacity-25 disabled:hover:bg-transparent transition-all cursor-pointer disabled:cursor-not-allowed"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.97] disabled:opacity-25 disabled:hover:bg-transparent transition-all cursor-pointer disabled:cursor-not-allowed"
               aria-label="Redo"
             >
-              <Redo2 className="w-4 h-4" />
+              <ArrowClockwise size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Redo <span className="text-white/40 font-mono text-[9px]">(Ctrl+Y)</span>
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl flex items-center justify-between gap-3 text-left">
+              <span>Redo</span>
+              <span className="text-zinc-400 text-[10px] text-right">Ctrl+Y</span>
             </div>
           </div>
 
@@ -194,13 +193,13 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
                   resetCurrentTemplate();
                 }
               }}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-red-400 hover:bg-red-500/10 active:scale-[0.94] transition-all cursor-pointer"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 active:scale-[0.97] transition-all cursor-pointer"
               aria-label="Reset Canvas"
             >
-              <RotateCcw className="w-4 h-4" />
+              <ArrowsClockwise size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Reset Layout
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl text-left">
+              Reset layout
             </div>
           </div>
         </div>
@@ -214,13 +213,14 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             <button
               type="button"
               onClick={onOpenExport}
-              className="w-9 h-9 rounded-lg bg-blue-600 hover:bg-blue-500 active:scale-[0.94] text-white flex items-center justify-center shadow-lg shadow-blue-600/30 transition-all cursor-pointer"
-              aria-label="Export 1080p Story"
+              className="w-9 h-9 rounded-lg bg-white text-black hover:bg-zinc-200 active:scale-[0.97] flex items-center justify-center transition-all cursor-pointer"
+              aria-label="Export Story"
             >
-              <Download className="w-4 h-4" />
+              <DownloadSimple size={18} weight="bold" />
             </button>
-            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-[#171b24] border border-white/10 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
-              Export Story <span className="text-amber-300 font-semibold text-[10px]">4K / 1080p</span>
+            <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-[#161922] border border-white/15 text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl flex items-center justify-between gap-3 text-left">
+              <span>Export story</span>
+              <span className="text-zinc-400 text-[10px] text-right">4K / 1080p</span>
             </div>
           </div>
         </div>
@@ -235,11 +235,11 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="flex flex-col items-center justify-center py-1 px-2 text-white/75 hover:text-white active:scale-[0.92] transition-transform cursor-pointer"
+          className="flex flex-col items-center justify-center py-1 px-2 text-white/80 hover:text-white active:scale-[0.97] transition-transform cursor-pointer"
           aria-label="Add Photos"
         >
-          <Upload className="w-4 h-4 text-blue-400" />
-          <span className="text-[9px] mt-0.5 tracking-tight">Photos</span>
+          <UploadSimple size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Photos</span>
         </button>
 
         {/* Background Settings */}
@@ -251,15 +251,15 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             setActiveInspectorTab('canvas');
             setIsMobileInspectorOpen(true);
           }}
-          className={`flex flex-col items-center justify-center py-1 px-2 active:scale-[0.92] transition-transform cursor-pointer ${
+          className={`flex flex-col items-center justify-center py-1 px-2 active:scale-[0.97] transition-transform cursor-pointer ${
             isCanvasBackgroundActive
-              ? 'text-amber-300'
-              : 'text-white/75 hover:text-white'
+              ? 'text-white font-medium'
+              : 'text-white/80 hover:text-white'
           }`}
           aria-label="Background Settings"
         >
-          <ImageIcon className="w-4 h-4 text-amber-400" />
-          <span className="text-[9px] mt-0.5 tracking-tight">Backdrop</span>
+          <ImageSquare size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Backdrop</span>
         </button>
 
         {/* Date Numbers Toggle */}
@@ -267,17 +267,17 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
           <button
             type="button"
             onClick={toggleDateNumbers}
-            className={`flex flex-col items-center justify-center py-1 px-2 relative active:scale-[0.92] transition-transform cursor-pointer ${
-              calendarConfig.showDateNumbers ? 'text-blue-300' : 'text-white/75 hover:text-white'
+            className={`flex flex-col items-center justify-center py-1 px-2 relative active:scale-[0.97] transition-transform cursor-pointer ${
+              calendarConfig.showDateNumbers ? 'text-white font-medium' : 'text-white/80 hover:text-white'
             }`}
             aria-label="Toggle Numbers"
           >
-            <Calendar className="w-4 h-4 text-blue-400" />
-            <span className="text-[9px] mt-0.5 tracking-tight">
-              {calendarConfig.showDateNumbers ? 'Num ON' : 'Numbers'}
+            <CalendarBlank size={18} weight="bold" />
+            <span className="text-[9px] mt-0.5 tracking-normal">
+              {calendarConfig.showDateNumbers ? 'Num on' : 'Numbers'}
             </span>
             {calendarConfig.showDateNumbers && (
-              <span className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-blue-500" />
+              <span className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-white" />
             )}
           </button>
         )}
@@ -286,11 +286,11 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
         <button
           type="button"
           onClick={shufflePhotos}
-          className="flex flex-col items-center justify-center py-1 px-2 text-white/75 hover:text-white active:scale-[0.92] transition-transform cursor-pointer"
+          className="flex flex-col items-center justify-center py-1 px-2 text-white/80 hover:text-white active:scale-[0.97] transition-transform cursor-pointer"
           aria-label="Shuffle"
         >
-          <Shuffle className="w-4 h-4" />
-          <span className="text-[9px] mt-0.5 tracking-tight">Shuffle</span>
+          <Shuffle size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Shuffle</span>
         </button>
 
         {/* Undo */}
@@ -298,11 +298,11 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
           type="button"
           disabled={!canUndo}
           onClick={() => undo()}
-          className="flex flex-col items-center justify-center py-1 px-1.5 text-white/75 hover:text-white active:scale-[0.92] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
+          className="flex flex-col items-center justify-center py-1 px-1.5 text-white/80 hover:text-white active:scale-[0.97] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
           aria-label="Undo"
         >
-          <Undo2 className="w-4 h-4" />
-          <span className="text-[9px] mt-0.5 tracking-tight">Undo</span>
+          <ArrowCounterClockwise size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Undo</span>
         </button>
 
         {/* Redo */}
@@ -310,37 +310,37 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
           type="button"
           disabled={!canRedo}
           onClick={() => redo()}
-          className="flex flex-col items-center justify-center py-1 px-1.5 text-white/75 hover:text-white active:scale-[0.92] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
+          className="flex flex-col items-center justify-center py-1 px-1.5 text-white/80 hover:text-white active:scale-[0.97] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
           aria-label="Redo"
         >
-          <Redo2 className="w-4 h-4" />
-          <span className="text-[9px] mt-0.5 tracking-tight">Redo</span>
+          <ArrowClockwise size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Redo</span>
         </button>
 
         {/* Adjust Drawer Toggle */}
         <button
           type="button"
           onClick={() => setIsMobileInspectorOpen(!isMobileInspectorOpen)}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-lg active:scale-[0.92] transition-all cursor-pointer ${
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-lg active:scale-[0.97] transition-all cursor-pointer ${
             isMobileInspectorOpen || selectedSlotId || selectedTextId
-              ? 'bg-blue-600/30 text-blue-200'
-              : 'text-white/75 hover:text-white'
+              ? 'bg-white text-black font-medium'
+              : 'text-white/80 hover:text-white'
           }`}
           aria-label="Inspector Drawer"
         >
-          <Sliders className="w-4 h-4 text-blue-400" />
-          <span className="text-[9px] mt-0.5 tracking-tight font-medium">Adjust</span>
+          <SlidersHorizontal size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Adjust</span>
         </button>
 
         {/* Export CTA */}
         <button
           type="button"
           onClick={onOpenExport}
-          className="flex flex-col items-center justify-center py-1 px-3 rounded-lg bg-blue-600 active:scale-[0.92] text-white shadow-md shadow-blue-600/30 transition-transform cursor-pointer"
+          className="flex flex-col items-center justify-center py-1 px-3 rounded-lg bg-white text-black hover:bg-zinc-200 active:scale-[0.97] transition-transform cursor-pointer"
           aria-label="Export"
         >
-          <Download className="w-4 h-4" />
-          <span className="text-[9px] mt-0.5 font-semibold">Save</span>
+          <DownloadSimple size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 font-medium">Save</span>
         </button>
       </nav>
     </>

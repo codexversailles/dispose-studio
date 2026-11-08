@@ -3,7 +3,7 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { BackgroundCanvas } from '../primitives/BackgroundCanvas';
 import { PhotoSlot } from '../primitives/PhotoSlot';
 import { EditableTextLayer } from '../primitives/EditableTextLayer';
-import { GripVertical } from 'lucide-react';
+import { DotsSixVertical } from '@phosphor-icons/react';
 import { SnapGuide } from '../../core/types/template';
 
 export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean }>(
@@ -108,26 +108,26 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
         {/* Full-bleed background layer */}
         <BackgroundCanvas interactive={interactive} />
 
-        {/* Canva-style Snapping Guide Lines */}
+        {/* Canva-style Snapping Guide Lines (Swiss Monochrome) */}
         {!isExporting &&
           activeSnapGuides.map((guide, idx) =>
             guide.type === 'x-center' ? (
               <div
                 key={`guide-${idx}`}
-                className="absolute top-0 bottom-0 w-[1.5px] bg-pink-500 z-50 pointer-events-none shadow-[0_0_8px_rgba(236,72,153,0.9)]"
+                className="absolute top-0 bottom-0 w-[1px] bg-white z-50 pointer-events-none shadow-[0_0_6px_rgba(0,0,0,0.9)]"
                 style={{ left: `${guide.position}px`, transform: 'translateX(-50%)' }}
               >
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-pink-600 text-white font-mono text-[8px] font-semibold px-1 py-0.5 rounded shadow whitespace-nowrap">
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-white text-black font-sans text-[8.5px] font-medium px-1.5 py-0.5 rounded shadow whitespace-nowrap">
                   Center X
                 </div>
               </div>
             ) : (
               <div
                 key={`guide-${idx}`}
-                className="absolute left-0 right-0 h-[1.5px] bg-pink-500 z-50 pointer-events-none shadow-[0_0_8px_rgba(236,72,153,0.9)]"
+                className="absolute left-0 right-0 h-[1px] bg-white z-50 pointer-events-none shadow-[0_0_6px_rgba(0,0,0,0.9)]"
                 style={{ top: `${guide.position}px`, transform: 'translateY(-50%)' }}
               >
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 bg-pink-600 text-white font-mono text-[8px] font-semibold px-1 py-0.5 rounded shadow whitespace-nowrap">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 bg-white text-black font-sans text-[8.5px] font-medium px-1.5 py-0.5 rounded shadow whitespace-nowrap">
                   Center Y
                 </div>
               </div>
@@ -152,14 +152,14 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
           {/* Canva Drag Handle for Entire Grid */}
           {!isExporting && (
             <div
-              className="absolute -top-7 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#161a22]/90 border border-white/20 text-white/70 hover:text-white text-[9.5px] font-medium shadow-xl cursor-grab active:cursor-grabbing backdrop-blur-md z-40 touch-none"
+              className="absolute -top-7 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#161a22]/95 border border-white/20 text-white/80 hover:text-white text-[9.5px] font-medium shadow-xl cursor-grab active:cursor-grabbing backdrop-blur-md z-40 touch-none"
               onPointerDown={handleGridPointerDown}
               onPointerMove={handleGridPointerMove}
               onPointerUp={handleGridPointerUp}
               onPointerCancel={handleGridPointerUp}
               title="Click and drag to reposition entire photo grid (snaps to center)"
             >
-              <GripVertical className="w-3 h-3 text-pink-400" />
+              <DotsSixVertical size={13} weight="bold" />
               <span>Drag Grid</span>
             </div>
           )}

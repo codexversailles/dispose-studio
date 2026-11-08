@@ -4,21 +4,21 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { compressImageFile } from '../../core/utils/imageCompressor';
 import { MONTH_NAMES_CAPITAL, WEEKDAYS_SUN_START, WEEKDAYS_MON_START } from '../../core/utils/calendarGenerator';
 import {
-  Sliders,
-  Image as ImageIcon,
-  Type,
-  Calendar,
-  Layers,
+  SlidersHorizontal,
+  ImageSquare,
+  TextT,
+  CalendarBlank,
+  Stack,
   Square,
-  Upload,
-  RefreshCw,
-  Trash2,
-  ArrowRightLeft,
-  EyeOff,
+  UploadSimple,
+  ArrowsClockwise,
+  Trash,
+  ArrowsLeftRight,
+  EyeSlash,
   Sun,
-  Grid,
+  GridFour,
   X,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 export const InspectorPanel: React.FC = () => {
   const selectedSlotId = useEditorStore((s) => s.selectedSlotId);
@@ -90,7 +90,7 @@ export const InspectorPanel: React.FC = () => {
       {/* Mobile Drawer Backdrop */}
       {isMobileInspectorOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 md:hidden transition-opacity"
+          className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={() => setIsMobileInspectorOpen(false)}
         />
       )}
@@ -124,18 +124,18 @@ export const InspectorPanel: React.FC = () => {
 
         {/* Top Header / Mode Switcher */}
         <div className="p-3 border-b border-white/10 flex items-center justify-between bg-[#12161f]">
-          <div className="flex items-center gap-1.5 text-xs font-semibold tracking-tight text-white/90">
-            <Sliders className="w-3.5 h-3.5 text-blue-400" />
+          <div className="flex items-center gap-2 text-xs font-semibold tracking-tight text-white text-left">
+            <SlidersHorizontal size={15} weight="bold" />
             <span>
               {selectedSlotId
-                ? `Photo Slot (${selectedSlotId})`
+                ? `Photo slot (${selectedSlotId})`
                 : selectedTextId
-                ? `Text Layer (${selectedTextId})`
-                : 'Studio Inspector'}
+                ? `Text layer (${selectedTextId})`
+                : 'Studio inspector'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-right">
             {(selectedSlotId || selectedTextId) && (
               <button
                 type="button"
@@ -144,7 +144,7 @@ export const InspectorPanel: React.FC = () => {
                   selectText(null);
                   setActiveInspectorTab('canvas');
                 }}
-                className="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
+                className="text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer"
               >
                 Deselect
               </button>
@@ -157,7 +157,7 @@ export const InspectorPanel: React.FC = () => {
               className="p-1 rounded-md hover:bg-white/10 text-white/60 hover:text-white md:hidden cursor-pointer"
               aria-label="Close Inspector"
             >
-              <X className="w-4 h-4" />
+              <X size={16} weight="bold" />
             </button>
           </div>
         </div>
@@ -169,11 +169,11 @@ export const InspectorPanel: React.FC = () => {
           onClick={() => setActiveInspectorTab('canvas')}
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
             activeInspectorTab === 'canvas' && !selectedSlotId && !selectedTextId
-              ? 'border-b-2 border-blue-500 text-white font-medium bg-white/5'
+              ? 'border-b-2 border-white text-white font-medium bg-white/5'
               : 'text-white/60 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Layers className="w-3.5 h-3.5" />
+          <Stack size={14} weight="bold" />
           <span>Canvas</span>
         </button>
 
@@ -183,11 +183,11 @@ export const InspectorPanel: React.FC = () => {
             onClick={() => setActiveInspectorTab('calendar')}
             className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
               activeInspectorTab === 'calendar'
-                ? 'border-b-2 border-blue-500 text-white font-medium bg-white/5'
+                ? 'border-b-2 border-white text-white font-medium bg-white/5'
                 : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Calendar className="w-3.5 h-3.5" />
+            <CalendarBlank size={14} weight="bold" />
             <span>Calendar</span>
           </button>
         )}
@@ -198,11 +198,11 @@ export const InspectorPanel: React.FC = () => {
             onClick={() => setActiveInspectorTab('slot')}
             className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
               activeInspectorTab === 'slot'
-                ? 'border-b-2 border-blue-500 text-white font-medium bg-white/5'
+                ? 'border-b-2 border-white text-white font-medium bg-white/5'
                 : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
           >
-            <ImageIcon className="w-3.5 h-3.5" />
+            <ImageSquare size={14} weight="bold" />
             <span>Slot</span>
           </button>
         )}
@@ -213,11 +213,11 @@ export const InspectorPanel: React.FC = () => {
             onClick={() => setActiveInspectorTab('text')}
             className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
               activeInspectorTab === 'text'
-                ? 'border-b-2 border-blue-500 text-white font-medium bg-white/5'
+                ? 'border-b-2 border-white text-white font-medium bg-white/5'
                 : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Type className="w-3.5 h-3.5" />
+            <TextT size={14} weight="bold" />
             <span>Text</span>
           </button>
         )}
@@ -230,8 +230,8 @@ export const InspectorPanel: React.FC = () => {
           <div className="space-y-5">
             {/* Slot Photo Preview & Replacement */}
             <div className="space-y-2">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Photo Frame
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Photo frame
               </label>
 
               {activeSlot.imageUrl ? (
@@ -244,18 +244,18 @@ export const InspectorPanel: React.FC = () => {
                       transform: `scale(${activeSlot.scale}) translate(${activeSlot.x}%, ${activeSlot.y}%)`,
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
                     <button
                       type="button"
                       onClick={() => slotFileInputRef.current?.click()}
-                      className="px-2.5 py-1 rounded bg-blue-600 text-white font-medium text-[11px]"
+                      className="px-3 py-1 rounded bg-white text-black font-medium text-[11px] hover:bg-zinc-200 transition-colors"
                     >
                       Replace
                     </button>
                     <button
                       type="button"
                       onClick={() => clearSlot(selectedSlotId)}
-                      className="px-2.5 py-1 rounded bg-red-600/80 text-white font-medium text-[11px]"
+                      className="px-3 py-1 rounded bg-zinc-800 text-white font-medium text-[11px] hover:bg-zinc-700 transition-colors"
                     >
                       Empty
                     </button>
@@ -265,27 +265,27 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => slotFileInputRef.current?.click()}
-                  className="w-full py-6 border border-dashed border-white/20 hover:border-blue-400 rounded-lg flex flex-col items-center justify-center gap-2 text-white/70 hover:text-white transition-colors bg-white/5"
+                  className="w-full py-6 border border-dashed border-white/20 hover:border-white rounded-lg flex flex-col items-center justify-center gap-2 text-zinc-400 hover:text-white transition-colors bg-white/5"
                 >
-                  <Upload className="w-5 h-5 text-blue-400" />
-                  <span>Choose Photo for Slot</span>
+                  <UploadSimple size={20} weight="bold" />
+                  <span>Choose photo for slot</span>
                 </button>
               )}
             </div>
 
             {/* Frame Style State */}
             <div className="space-y-2">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Cell Appearance
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Cell appearance
               </label>
               <div className="grid grid-cols-3 gap-1 p-1 bg-white/5 rounded-lg border border-white/10 text-center">
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'photo')}
-                  className={`py-1.5 rounded transition-colors ${
+                  className={`py-1.5 rounded transition-colors text-xs ${
                     activeSlot.frameStyle === 'photo'
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Photo
@@ -293,21 +293,21 @@ export const InspectorPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'empty-bordered')}
-                  className={`py-1.5 rounded transition-colors ${
+                  className={`py-1.5 rounded transition-colors text-xs ${
                     activeSlot.frameStyle === 'empty-bordered'
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
-                  Empty Border
+                  Empty border
                 </button>
                 <button
                   type="button"
                   onClick={() => setSlotFrameStyle(selectedSlotId, 'hidden')}
-                  className={`py-1.5 rounded transition-colors ${
+                  className={`py-1.5 rounded transition-colors text-xs ${
                     activeSlot.frameStyle === 'hidden'
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Hidden
@@ -319,8 +319,8 @@ export const InspectorPanel: React.FC = () => {
             {activeSlot.imageUrl && (
               <div className="space-y-4 pt-2 border-t border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-white/90">Zoom Scale</span>
-                  <span className="font-mono text-white/60">{activeSlot.scale.toFixed(1)}x</span>
+                  <span className="font-medium text-white/90 text-left">Zoom scale</span>
+                  <span className="text-zinc-400 text-right tabular-nums">{activeSlot.scale.toFixed(1)}x</span>
                 </div>
                 <input
                   type="range"
@@ -331,14 +331,14 @@ export const InspectorPanel: React.FC = () => {
                   onChange={(e) =>
                     updateSlot(selectedSlotId, { scale: parseFloat(e.target.value) })
                   }
-                  className="w-full accent-blue-500"
+                  className="w-full accent-white"
                 />
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <div className="flex justify-between text-[11px] text-white/60 mb-1">
-                      <span>Pan X</span>
-                      <span>{activeSlot.x}%</span>
+                    <div className="flex justify-between text-[11px] mb-1">
+                      <span className="text-zinc-400 text-left">Pan X</span>
+                      <span className="text-white text-right tabular-nums">{activeSlot.x}%</span>
                     </div>
                     <input
                       type="range"
@@ -348,13 +348,13 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateSlot(selectedSlotId, { x: parseInt(e.target.value, 10) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
                   </div>
                   <div>
-                    <div className="flex justify-between text-[11px] text-white/60 mb-1">
-                      <span>Pan Y</span>
-                      <span>{activeSlot.y}%</span>
+                    <div className="flex justify-between text-[11px] mb-1">
+                      <span className="text-zinc-400 text-left">Pan Y</span>
+                      <span className="text-white text-right tabular-nums">{activeSlot.y}%</span>
                     </div>
                     <input
                       type="range"
@@ -364,7 +364,7 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateSlot(selectedSlotId, { y: parseInt(e.target.value, 10) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
                   </div>
                 </div>
@@ -374,8 +374,8 @@ export const InspectorPanel: React.FC = () => {
                   onClick={() => updateSlot(selectedSlotId, { scale: 1.0, x: 0, y: 0 })}
                   className="w-full py-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-1.5 text-white/80"
                 >
-                  <RefreshCw className="w-3 h-3" />
-                  <span>Reset Crop to Fit</span>
+                  <ArrowsClockwise size={14} weight="bold" />
+                  <span>Reset crop to fit</span>
                 </button>
               </div>
             )}
@@ -383,20 +383,20 @@ export const InspectorPanel: React.FC = () => {
             {/* Frame Border Controls */}
             <div className="space-y-3 pt-2 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-white/90">Show Frame Border</span>
+                <span className="font-medium text-white/90 text-left">Show frame border</span>
                 <input
                   type="checkbox"
                   checked={activeSlot.hasBorder}
                   onChange={() => toggleSlotBorder(selectedSlotId)}
-                  className="accent-blue-500 w-4 h-4 rounded cursor-pointer"
+                  className="accent-white w-4 h-4 rounded cursor-pointer"
                 />
               </div>
 
               {activeSlot.hasBorder && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-white/70">Border Thickness</span>
-                    <span className="font-mono text-white/60">{activeSlot.borderWidth || 1.5}px</span>
+                    <span className="text-zinc-400 text-left">Border thickness</span>
+                    <span className="text-white text-right tabular-nums">{activeSlot.borderWidth || 1.5}px</span>
                   </div>
                   <input
                     type="range"
@@ -407,11 +407,11 @@ export const InspectorPanel: React.FC = () => {
                     onChange={(e) =>
                       updateSlot(selectedSlotId, { borderWidth: parseFloat(e.target.value) })
                     }
-                    className="w-full accent-blue-500"
+                    className="w-full accent-white"
                   />
 
                   <div className="flex items-center justify-between">
-                    <span className="text-white/70">Border Color</span>
+                    <span className="text-zinc-400 text-left">Border color</span>
                     <input
                       type="color"
                       value={activeSlot.borderColor || '#ffffff'}
@@ -427,11 +427,11 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Swap with Another Slot */}
             <div className="space-y-2 pt-2 border-t border-white/10">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Swap Cell With
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Swap cell with
               </label>
               <div className="flex items-center gap-2">
-                <ArrowRightLeft className="w-4 h-4 text-white/40" />
+                <ArrowsLeftRight size={16} weight="bold" className="text-zinc-500" />
                 <select
                   className="flex-1 bg-white/5 border border-white/10 rounded px-2 py-1.5 text-xs text-white outline-none"
                   onChange={(e) => {
@@ -464,10 +464,10 @@ export const InspectorPanel: React.FC = () => {
             {/* Content Input */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                  Text Content
+                <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                  Text content
                 </label>
-                <span className="text-[10px] text-white/40 font-mono">
+                <span className="text-[10px] text-zinc-500 text-right tabular-nums">
                   {activeText.content.length} chars
                 </span>
               </div>
@@ -476,14 +476,14 @@ export const InspectorPanel: React.FC = () => {
                 value={activeText.content}
                 onChange={(e) => updateText(selectedTextId, { content: e.target.value })}
                 placeholder="Enter caption or title..."
-                className="w-full min-h-[90px] bg-white/5 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 resize-y font-sans text-xs leading-relaxed"
+                className="w-full min-h-[90px] bg-white/5 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-white resize-y font-sans text-xs leading-relaxed"
               />
             </div>
 
             {/* Typography Face & Size */}
             <div className="space-y-3">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Font Family
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Font family
               </label>
               <select
                 value={activeText.fontFamily}
@@ -523,8 +523,8 @@ export const InspectorPanel: React.FC = () => {
               {/* Font Weight Selector */}
               <div className="space-y-1.5 pt-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Font Weight</span>
-                  <span className="font-mono text-white/50 text-[10px]">
+                  <span className="text-zinc-400 text-left">Font weight</span>
+                  <span className="text-zinc-400 text-right text-[10px] tabular-nums">
                     {activeText.fontWeight}
                   </span>
                 </div>
@@ -544,8 +544,8 @@ export const InspectorPanel: React.FC = () => {
                         onClick={() => updateText(selectedTextId, { fontWeight: weight })}
                         className={`py-1 rounded text-[10px] transition-all active:scale-[0.97] ${
                           isCurrent
-                            ? 'bg-blue-600 text-white font-semibold shadow'
-                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                            ? 'bg-white text-black font-semibold'
+                            : 'text-zinc-400 hover:text-white hover:bg-white/5'
                         }`}
                         title={`${label} (${weight})`}
                       >
@@ -558,14 +558,14 @@ export const InspectorPanel: React.FC = () => {
 
               {/* Font Style: Italic Toggle */}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-white/70">Italic Slant</span>
+                <span className="text-zinc-400 text-left">Italic slant</span>
                 <button
                   type="button"
                   onClick={() => updateText(selectedTextId, { italic: !activeText.italic })}
                   className={`px-3 py-1 rounded text-xs italic font-medium transition-all active:scale-[0.97] border ${
                     activeText.italic
-                      ? 'bg-blue-600/30 border-blue-500 text-blue-200'
-                      : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'
                   }`}
                 >
                   Italic
@@ -573,8 +573,8 @@ export const InspectorPanel: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-white/70">Font Size</span>
-                <span className="font-mono text-white/60">{activeText.fontSize}px</span>
+                <span className="text-zinc-400 text-left">Font size</span>
+                <span className="text-white text-right tabular-nums">{activeText.fontSize}px</span>
               </div>
               <input
                 type="range"
@@ -584,14 +584,14 @@ export const InspectorPanel: React.FC = () => {
                 onChange={(e) =>
                   updateText(selectedTextId, { fontSize: parseInt(e.target.value, 10) })
                 }
-                className="w-full accent-blue-500"
+                className="w-full accent-white"
               />
             </div>
 
             {/* Color & Alignment */}
             <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
               <div>
-                <span className="text-[11px] text-white/60 block mb-1">Color</span>
+                <span className="text-[11px] text-zinc-400 block mb-1 text-left">Color</span>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -599,12 +599,12 @@ export const InspectorPanel: React.FC = () => {
                     onChange={(e) => updateText(selectedTextId, { color: e.target.value })}
                     className="w-7 h-7 rounded border border-white/20 bg-transparent cursor-pointer"
                   />
-                  <span className="font-mono text-[11px] text-white/70">{activeText.color}</span>
+                  <span className="text-[11px] text-zinc-400 text-right tabular-nums">{activeText.color}</span>
                 </div>
               </div>
 
               <div>
-                <span className="text-[11px] text-white/60 block mb-1">Align</span>
+                <span className="text-[11px] text-zinc-400 block mb-1 text-left">Align</span>
                 <div className="flex gap-1 bg-white/5 p-1 rounded border border-white/10">
                   {(['left', 'center', 'right'] as const).map((a) => (
                     <button
@@ -612,7 +612,7 @@ export const InspectorPanel: React.FC = () => {
                       type="button"
                       onClick={() => updateText(selectedTextId, { align: a })}
                       className={`flex-1 py-0.5 rounded capitalize text-[10px] ${
-                        activeText.align === a ? 'bg-blue-600 text-white font-medium' : 'text-white/60'
+                        activeText.align === a ? 'bg-white text-black font-medium' : 'text-zinc-400 hover:text-white'
                       }`}
                     >
                       {a}
@@ -625,8 +625,8 @@ export const InspectorPanel: React.FC = () => {
             {/* Letter Spacing */}
             <div className="space-y-2 pt-2 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <span className="text-white/70">Letter Spacing</span>
-                <span className="font-mono text-white/60">{activeText.letterSpacing}px</span>
+                <span className="text-zinc-400 text-left">Letter spacing</span>
+                <span className="text-white text-right tabular-nums">{activeText.letterSpacing}px</span>
               </div>
               <input
                 type="range"
@@ -637,14 +637,14 @@ export const InspectorPanel: React.FC = () => {
                 onChange={(e) =>
                   updateText(selectedTextId, { letterSpacing: parseFloat(e.target.value) })
                 }
-                className="w-full accent-blue-500"
+                className="w-full accent-white"
               />
             </div>
 
             {/* Canvas Direct Resizing Hint */}
             <div className="p-2.5 bg-white/5 rounded-lg border border-white/10 text-white/70 flex items-center justify-between text-[11px]">
-              <span className="text-white/60">Column Resize</span>
-              <span className="font-mono text-[10px] text-blue-400">
+              <span className="text-zinc-400 text-left">Column resize</span>
+              <span className="text-[10px] text-white/80 text-right">
                 Drag handles on canvas
               </span>
             </div>
@@ -652,7 +652,7 @@ export const InspectorPanel: React.FC = () => {
             {/* Drop Shadow for Readability */}
             <div className="space-y-3 pt-2 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-white/90">Drop Shadow</span>
+                <span className="font-medium text-white/90 text-left">Drop shadow</span>
                 <input
                   type="checkbox"
                   checked={activeText.shadow?.enabled ?? true}
@@ -669,15 +669,15 @@ export const InspectorPanel: React.FC = () => {
                       },
                     })
                   }
-                  className="accent-blue-500 w-4 h-4 rounded cursor-pointer"
+                  className="accent-white w-4 h-4 rounded cursor-pointer"
                 />
               </div>
 
               {activeText.shadow?.enabled && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-white/60 text-[11px]">
-                    <span>Shadow Blur</span>
-                    <span>{activeText.shadow.blur}px</span>
+                  <div className="flex justify-between text-zinc-400 text-[11px]">
+                    <span className="text-left">Shadow blur</span>
+                    <span className="text-white text-right tabular-nums">{activeText.shadow.blur}px</span>
                   </div>
                   <input
                     type="range"
@@ -692,7 +692,7 @@ export const InspectorPanel: React.FC = () => {
                         },
                       })
                     }
-                    className="w-full accent-blue-500"
+                    className="w-full accent-white"
                   />
                 </div>
               )}
@@ -704,8 +704,8 @@ export const InspectorPanel: React.FC = () => {
         {activeInspectorTab === 'calendar' && calendarConfig?.enabled && (
           <div className="space-y-5">
             <div className="space-y-2">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Target Month & Year
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Target month & year
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <select
@@ -740,8 +740,8 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Weekday Start Day */}
             <div className="space-y-2">
-              <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
-                Week Starts On
+              <label className="text-[11px] font-medium text-zinc-400 block text-left">
+                Week starts on
               </label>
               <div className="grid grid-cols-2 gap-1 p-1 bg-white/5 rounded-lg border border-white/10">
                 <button
@@ -753,10 +753,10 @@ export const InspectorPanel: React.FC = () => {
                     });
                     applyMonthCalendar(calendarConfig.year, calendarConfig.month, 'sun');
                   }}
-                  className={`py-1.5 rounded transition-colors ${
+                  className={`py-1.5 rounded transition-colors text-xs ${
                     calendarConfig.startDay === 'sun'
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Sunday
@@ -770,10 +770,10 @@ export const InspectorPanel: React.FC = () => {
                     });
                     applyMonthCalendar(calendarConfig.year, calendarConfig.month, 'mon');
                   }}
-                  className={`py-1.5 rounded transition-colors ${
+                  className={`py-1.5 rounded transition-colors text-xs ${
                     calendarConfig.startDay === 'mon'
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Monday
@@ -783,27 +783,27 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Weekday Header Toggle */}
             <div className="flex items-center justify-between pt-2 border-t border-white/10">
-              <span className="font-medium text-white/90">Show Weekday Header</span>
+              <span className="font-medium text-white/90 text-left">Show weekday header</span>
               <input
                 type="checkbox"
                 checked={calendarConfig.showWeekdayHeader}
                 onChange={(e) =>
                   updateCalendarConfig({ showWeekdayHeader: e.target.checked })
                 }
-                className="accent-blue-500 w-4 h-4 rounded cursor-pointer"
+                className="accent-white w-4 h-4 rounded cursor-pointer"
               />
             </div>
 
             {/* Weekday Header Typography Customizer */}
             {calendarConfig.showWeekdayHeader && (
               <div className="space-y-3 p-3 bg-white/5 rounded-xl border border-white/10 text-xs">
-                <span className="text-[10px] font-medium text-white/70 uppercase tracking-wider block">
-                  Weekday Header Font
+                <span className="text-[10px] font-medium text-zinc-400 block text-left">
+                  Weekday header font
                 </span>
 
                 {/* Font Family */}
                 <div>
-                  <span className="text-[11px] text-white/60 block mb-1">Family</span>
+                  <span className="text-[11px] text-zinc-400 block mb-1 text-left">Family</span>
                   <select
                     value={calendarConfig.weekdayFontFamily || 'Arial Light'}
                     onChange={(e) =>
@@ -827,8 +827,8 @@ export const InspectorPanel: React.FC = () => {
                 {/* Font Weight */}
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-white/60">Weight</span>
-                    <span className="font-mono text-[10px] text-white/40">
+                    <span className="text-[11px] text-zinc-400 text-left">Weight</span>
+                    <span className="text-[10px] text-zinc-400 text-right tabular-nums">
                       {calendarConfig.weekdayFontWeight || 500}
                     </span>
                   </div>
@@ -848,8 +848,8 @@ export const InspectorPanel: React.FC = () => {
                           onClick={() => updateCalendarConfig({ weekdayFontWeight: weight })}
                           className={`py-1 rounded text-[9.5px] transition-all active:scale-[0.97] ${
                             isCur
-                              ? 'bg-blue-600 text-white font-semibold shadow'
-                              : 'text-white/60 hover:text-white'
+                              ? 'bg-white text-black font-semibold'
+                              : 'text-zinc-400 hover:text-white'
                           }`}
                         >
                           {label}
@@ -862,9 +862,9 @@ export const InspectorPanel: React.FC = () => {
                 {/* Font Size & Letter Spacing */}
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <div>
-                    <div className="flex justify-between text-[11px] text-white/60 mb-0.5">
-                      <span>Size</span>
-                      <span className="font-mono text-[10px]">{calendarConfig.weekdayFontSize || 9.5}px</span>
+                    <div className="flex justify-between text-[11px] mb-0.5">
+                      <span className="text-zinc-400 text-left">Size</span>
+                      <span className="text-white text-right tabular-nums">{calendarConfig.weekdayFontSize || 9.5}px</span>
                     </div>
                     <input
                       type="range"
@@ -875,13 +875,13 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateCalendarConfig({ weekdayFontSize: parseFloat(e.target.value) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
                   </div>
                   <div>
-                    <div className="flex justify-between text-[11px] text-white/60 mb-0.5">
-                      <span>Spacing</span>
-                      <span className="font-mono text-[10px]">{calendarConfig.weekdayLetterSpacing ?? 0.3}px</span>
+                    <div className="flex justify-between text-[11px] mb-0.5">
+                      <span className="text-zinc-400 text-left">Spacing</span>
+                      <span className="text-white text-right tabular-nums">{calendarConfig.weekdayLetterSpacing ?? 0.3}px</span>
                     </div>
                     <input
                       type="range"
@@ -892,7 +892,7 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateCalendarConfig({ weekdayLetterSpacing: parseFloat(e.target.value) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
                   </div>
                 </div>
@@ -911,8 +911,8 @@ export const InspectorPanel: React.FC = () => {
                         onClick={() => updateCalendarConfig({ weekdayTransform: val as any })}
                         className={`px-1.5 py-0.5 rounded text-[9px] ${
                           (calendarConfig.weekdayTransform || 'capitalize') === val
-                            ? 'bg-blue-600 text-white font-medium'
-                            : 'text-white/60 hover:text-white'
+                            ? 'bg-white text-black font-medium'
+                            : 'text-zinc-400 hover:text-white'
                         }`}
                       >
                         {label}
@@ -927,8 +927,8 @@ export const InspectorPanel: React.FC = () => {
                     }
                     className={`px-2 py-0.5 rounded text-[10px] italic border transition-all active:scale-[0.97] ${
                       calendarConfig.weekdayItalic
-                        ? 'bg-blue-600/30 border-blue-500 text-blue-200'
-                        : 'bg-black/30 border-white/10 text-white/60 hover:text-white'
+                        ? 'bg-white text-black border-white'
+                        : 'bg-black/30 border-white/10 text-zinc-400 hover:text-white'
                     }`}
                   >
                     Italic
@@ -939,15 +939,15 @@ export const InspectorPanel: React.FC = () => {
 
             {/* Toggle button to show numbers on the date */}
             <div className="flex items-center justify-between pt-2 border-t border-white/10">
-              <div>
-                <span className="font-medium text-white/90 block">Show Date Numbers</span>
-                <span className="text-[10px] text-white/50">Display 1, 2, 3... on day frames</span>
+              <div className="text-left">
+                <span className="font-medium text-white/90 block">Show date numbers</span>
+                <span className="text-[10px] text-zinc-500">Display 1, 2, 3... on day frames</span>
               </div>
               <button
                 type="button"
                 onClick={toggleDateNumbers}
                 className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out active:scale-[0.97] ${
-                  calendarConfig.showDateNumbers ? 'bg-blue-600' : 'bg-white/20'
+                  calendarConfig.showDateNumbers ? 'bg-white' : 'bg-white/20'
                 }`}
               >
                 <motion.span
@@ -960,8 +960,8 @@ export const InspectorPanel: React.FC = () => {
                   animate={{
                     scaleX: [1, 1.12, 1],
                   }}
-                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 ${
-                    calendarConfig.showDateNumbers ? 'translate-x-4' : 'translate-x-0'
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow ring-0 ${
+                    calendarConfig.showDateNumbers ? 'translate-x-4 bg-black' : 'translate-x-0 bg-white'
                   }`}
                 />
               </button>
@@ -975,16 +975,16 @@ export const InspectorPanel: React.FC = () => {
             {/* Full-bleed Background Section */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider">
+                <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider text-left">
                   Artboard Background
                 </label>
                 {background.imageUrl && (
                   <button
                     type="button"
                     onClick={() => updateBackground({ imageUrl: '' })}
-                    className="text-[11px] text-red-400 hover:text-red-300 font-medium cursor-pointer"
+                    className="text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
                   >
-                    Remove Image (No Image)
+                    Remove Image
                   </button>
                 )}
               </div>
@@ -998,20 +998,20 @@ export const InspectorPanel: React.FC = () => {
                       alt="Current Background"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
                       <button
                         type="button"
                         onClick={() => bgFileInputRef.current?.click()}
-                        className="px-2.5 py-1 rounded bg-blue-600 text-white font-medium text-[11px]"
+                        className="px-2.5 py-1 rounded bg-white text-black font-medium text-[11px] hover:bg-zinc-200 transition-colors"
                       >
                         Replace Photo
                       </button>
                       <button
                         type="button"
                         onClick={() => updateBackground({ imageUrl: '' })}
-                        className="px-2.5 py-1 rounded bg-red-600/80 text-white font-medium text-[11px]"
+                        className="px-2.5 py-1 rounded bg-white/10 text-white font-medium text-[11px] hover:bg-white/20 transition-colors"
                       >
-                        No Image
+                        Remove
                       </button>
                     </div>
                   </div>
@@ -1019,8 +1019,8 @@ export const InspectorPanel: React.FC = () => {
                   {/* Pan & Zoom Controls */}
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-white/70">Background Zoom</span>
-                      <span className="font-mono text-white/60">{background.scale.toFixed(1)}x</span>
+                      <span className="text-white/70 text-left">Background Zoom</span>
+                      <span className="font-mono text-zinc-400 text-right tabular-nums">{background.scale.toFixed(1)}x</span>
                     </div>
                     <input
                       type="range"
@@ -1031,14 +1031,14 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateBackground({ scale: parseFloat(e.target.value) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <div className="flex justify-between text-[11px] text-white/60 mb-1">
-                          <span>Pan X</span>
-                          <span>{background.position.x}px</span>
+                          <span className="text-left">Pan X</span>
+                          <span className="font-mono text-zinc-400 text-right tabular-nums">{background.position.x}px</span>
                         </div>
                         <input
                           type="range"
@@ -1050,13 +1050,13 @@ export const InspectorPanel: React.FC = () => {
                               position: { ...background.position, x: parseInt(e.target.value, 10) },
                             })
                           }
-                          className="w-full accent-blue-500"
+                          className="w-full accent-white"
                         />
                       </div>
                       <div>
                         <div className="flex justify-between text-[11px] text-white/60 mb-1">
-                          <span>Pan Y</span>
-                          <span>{background.position.y}px</span>
+                          <span className="text-left">Pan Y</span>
+                          <span className="font-mono text-zinc-400 text-right tabular-nums">{background.position.y}px</span>
                         </div>
                         <input
                           type="range"
@@ -1068,15 +1068,15 @@ export const InspectorPanel: React.FC = () => {
                               position: { ...background.position, y: parseInt(e.target.value, 10) },
                             })
                           }
-                          className="w-full accent-blue-500"
+                          className="w-full accent-white"
                         />
                       </div>
                     </div>
 
                     {/* Dark Dimming Overlay */}
                     <div className="flex items-center justify-between text-[11px] pt-1">
-                      <span className="text-white/70">Dim Darkness</span>
-                      <span className="font-mono text-white/60">
+                      <span className="text-white/70 text-left">Dim Darkness</span>
+                      <span className="font-mono text-zinc-400 text-right tabular-nums">
                         {Math.round(background.dimOpacity * 100)}%
                       </span>
                     </div>
@@ -1089,36 +1089,36 @@ export const InspectorPanel: React.FC = () => {
                       onChange={(e) =>
                         updateBackground({ dimOpacity: parseFloat(e.target.value) })
                       }
-                      className="w-full accent-blue-500"
+                      className="w-full accent-white"
                     />
                   </div>
                 </div>
               ) : (
                 /* "No Image" State (Default) */
                 <div className="space-y-3">
-                  <div className="p-4 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col items-center justify-center text-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white/60">
-                      <ImageIcon className="w-4 h-4" />
+                  <div className="p-4 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70">
+                      <ImageSquare size={16} weight="bold" />
                     </div>
-                    <div>
-                      <p className="font-medium text-white/90 text-xs">No Background Image</p>
-                      <p className="text-[11px] text-white/50 mt-0.5">
+                    <div className="text-left">
+                      <p className="font-medium text-white text-xs">No Background Image</p>
+                      <p className="text-[11px] text-zinc-400 mt-0.5">
                         Solid dark studio backdrop
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => bgFileInputRef.current?.click()}
-                      className="mt-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs flex items-center gap-1.5 shadow"
+                      className="mt-1 px-3 py-1.5 rounded-lg bg-white text-black hover:bg-zinc-200 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <Upload className="w-3.5 h-3.5" />
+                      <UploadSimple size={14} weight="bold" />
                       <span>Upload Background Photo</span>
                     </button>
                   </div>
 
                   {/* Solid Backdrop Color Picker */}
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-white/70">Backdrop Color</span>
+                    <span className="text-white/70 text-left">Backdrop Color</span>
                     <div className="flex items-center gap-2">
                       <input
                         type="color"
@@ -1126,7 +1126,7 @@ export const InspectorPanel: React.FC = () => {
                         onChange={(e) => updateBackground({ fallbackColor: e.target.value })}
                         className="w-7 h-7 rounded border border-white/20 bg-transparent cursor-pointer"
                       />
-                      <span className="font-mono text-[11px] text-white/60">
+                      <span className="font-mono text-[11px] text-zinc-400 text-right tabular-nums">
                         {background.fallbackColor || '#13161e'}
                       </span>
                     </div>
@@ -1137,8 +1137,8 @@ export const InspectorPanel: React.FC = () => {
               {/* Analog Film Grain */}
               <div className="space-y-2 pt-2 border-t border-white/10">
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-white/70">Analog Film Grain</span>
-                  <span className="font-mono text-white/60">
+                  <span className="text-white/70 text-left">Analog Film Grain</span>
+                  <span className="font-mono text-zinc-400 text-right tabular-nums">
                     {Math.round(background.grainOpacity * 100)}%
                   </span>
                 </div>
@@ -1151,7 +1151,7 @@ export const InspectorPanel: React.FC = () => {
                   onChange={(e) =>
                     updateBackground({ grainOpacity: parseFloat(e.target.value) })
                   }
-                  className="w-full accent-blue-500"
+                  className="w-full accent-white"
                 />
               </div>
             </div>
@@ -1159,27 +1159,23 @@ export const InspectorPanel: React.FC = () => {
             {/* Grid Position & Spacing */}
             <div className="space-y-3 pt-3 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider block">
+                <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider text-left block">
                   Grid Layout & Spacing
                 </label>
                 {(gridConfig.x !== 0 || gridConfig.y !== 0) && (
                   <button
                     type="button"
                     onClick={() => updateGridPosition(0, 0)}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 font-medium"
+                    className="text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
                   >
                     Reset Center
                   </button>
                 )}
               </div>
 
-              <p className="text-[10px] text-white/50 leading-relaxed">
-                Tip: Drag the <strong>"Drag Grid"</strong> pill or texts directly on canvas to reposition. They automatically snap to the middle X and Y axes!
-              </p>
-
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-white/70">Grid Gap</span>
-                <span className="font-mono text-white/60">{gridConfig.gap}px</span>
+                <span className="text-white/70 text-left">Grid Gap</span>
+                <span className="font-mono text-zinc-400 text-right tabular-nums">{gridConfig.gap}px</span>
               </div>
               <input
                 type="range"
@@ -1189,12 +1185,12 @@ export const InspectorPanel: React.FC = () => {
                 onChange={(e) =>
                   updateGridConfig({ gap: parseInt(e.target.value, 10) })
                 }
-                className="w-full accent-blue-500"
+                className="w-full accent-white"
               />
 
               <div className="flex items-center justify-between text-[11px] pt-1">
-                <span className="text-white/70">Default Border Thickness</span>
-                <span className="font-mono text-white/60">{gridConfig.borderWidth}px</span>
+                <span className="text-white/70 text-left">Default Border Thickness</span>
+                <span className="font-mono text-zinc-400 text-right tabular-nums">{gridConfig.borderWidth}px</span>
               </div>
               <input
                 type="range"
@@ -1205,7 +1201,7 @@ export const InspectorPanel: React.FC = () => {
                 onChange={(e) =>
                   updateGridConfig({ borderWidth: parseFloat(e.target.value) })
                 }
-                className="w-full accent-blue-500"
+                className="w-full accent-white"
               />
             </div>
           </div>

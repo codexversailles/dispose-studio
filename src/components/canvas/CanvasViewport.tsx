@@ -2,7 +2,12 @@ import React, { useRef, useState, useEffect, RefObject } from 'react';
 import { useEditorStore } from '../../core/store/useEditorStore';
 import { compressMultipleImages } from '../../core/utils/imageCompressor';
 import { StoryArtboard } from './StoryArtboard';
-import { UploadCloud, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import {
+  CloudArrowUp,
+  MagnifyingGlassPlus,
+  MagnifyingGlassMinus,
+  ArrowsOut,
+} from '@phosphor-icons/react';
 
 interface CanvasViewportProps {
   artboardRef: RefObject<HTMLDivElement | null>;
@@ -113,12 +118,12 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
         <StoryArtboard ref={artboardRef} />
       </div>
 
-      {/* Drag & Drop Visual Overlay */}
+      {/* Drag & Drop Visual Overlay (Swiss Monochrome) */}
       {isDropTarget && (
-        <div className="absolute inset-4 z-50 rounded-xl border-2 border-dashed border-blue-400 bg-blue-950/70 backdrop-blur-sm flex flex-col items-center justify-center text-white pointer-events-none">
-          <UploadCloud className="w-12 h-12 text-blue-400 mb-2 animate-bounce" />
-          <p className="text-lg font-semibold tracking-tight">Drop photos here to auto-fill grid</p>
-          <p className="text-xs text-blue-200 mt-1">
+        <div className="absolute inset-4 z-50 rounded-xl border-2 border-dashed border-white bg-black/90 backdrop-blur-md flex flex-col items-center justify-center text-white pointer-events-none">
+          <CloudArrowUp size={44} weight="bold" className="text-white mb-2" />
+          <p className="text-lg font-semibold tracking-tight">Drop photos here to fill grid</p>
+          <p className="text-xs text-zinc-400 mt-1">
             Photos will be compressed client-side and saved to your project
           </p>
         </div>
@@ -126,34 +131,34 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
 
       {/* Uploading progress notification */}
       {uploadStatus && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#181d26] border border-blue-500/40 text-blue-300 text-xs px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 backdrop-blur-md z-40 animate-pulse">
-          <UploadCloud className="w-3.5 h-3.5" />
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#181d26] border border-white/20 text-white text-xs px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 backdrop-blur-md z-40">
+          <CloudArrowUp size={16} weight="bold" />
           <span>{uploadStatus}</span>
         </div>
       )}
 
       {/* Bottom Floating Zoom Controls */}
-      <div className="absolute bottom-18 md:bottom-5 right-3 md:right-5 flex items-center gap-1.5 bg-[#141820]/90 border border-white/10 px-2 py-1.5 rounded-lg backdrop-blur-md shadow-xl text-xs text-white/80 z-20">
+      <div className="absolute bottom-18 md:bottom-5 right-3 md:right-5 flex items-center gap-1.5 bg-[#141820]/95 border border-white/15 px-2 py-1.5 rounded-lg backdrop-blur-md shadow-xl text-xs text-white/80 z-20">
         <button
           type="button"
           title="Zoom Out"
-          className="p-1 hover:bg-white/10 rounded transition-colors"
+          className="p-1 hover:bg-white/10 rounded transition-colors text-white/80 hover:text-white"
           onClick={() => setZoomLevel(Math.max(0.4, (zoomLevel || scale) - 0.1))}
         >
-          <ZoomOut className="w-3.5 h-3.5" />
+          <MagnifyingGlassMinus size={15} weight="bold" />
         </button>
 
-        <span className="font-mono text-[11px] px-1 text-white/90 min-w-[38px] text-center">
+        <span className="text-[11px] px-1 text-white/90 min-w-[36px] text-right tabular-nums">
           {Math.round(scale * 100)}%
         </span>
 
         <button
           type="button"
           title="Zoom In"
-          className="p-1 hover:bg-white/10 rounded transition-colors"
+          className="p-1 hover:bg-white/10 rounded transition-colors text-white/80 hover:text-white"
           onClick={() => setZoomLevel(Math.min(2.0, (zoomLevel || scale) + 0.1))}
         >
-          <ZoomIn className="w-3.5 h-3.5" />
+          <MagnifyingGlassPlus size={15} weight="bold" />
         </button>
 
         <div className="w-[1px] h-3 bg-white/15 mx-0.5" />
@@ -162,11 +167,11 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
           type="button"
           title="Fit to Screen"
           className={`p-1 rounded transition-colors ${
-            zoomLevel === 0 ? 'text-blue-400 bg-blue-500/10' : 'hover:bg-white/10 text-white/70'
+            zoomLevel === 0 ? 'text-black bg-white' : 'hover:bg-white/10 text-white/70 hover:text-white'
           }`}
           onClick={() => setZoomLevel(0)}
         >
-          <Maximize className="w-3.5 h-3.5" />
+          <ArrowsOut size={15} weight="bold" />
         </button>
       </div>
     </div>

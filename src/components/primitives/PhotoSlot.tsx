@@ -4,13 +4,11 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { POPOVER_VARIANTS } from '../../core/motion/transitions';
 import { compressImageFile } from '../../core/utils/imageCompressor';
 import {
-  ImagePlus,
-  RefreshCw,
+  ImageSquare,
+  ArrowsClockwise,
   Square,
-  Trash2,
-  Move,
-  Maximize2,
-} from 'lucide-react';
+  Trash,
+} from '@phosphor-icons/react';
 
 interface PhotoSlotProps {
   slotId: string;
@@ -67,6 +65,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
 
   // Handle pointer down for pan gesture inside photo
   const handlePointerDown = (e: React.PointerEvent) => {
+    // Never hijack clicks/gestures on buttons (floating toolbar, etc.)
+    if ((e.target as HTMLElement).closest('button')) return;
     if (isExporting || !imageUrl || frameStyle !== 'photo') return;
     
     // Select this slot
@@ -218,9 +218,9 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     <div
       className={`relative w-full ${aspectClass} box-border transition-shadow select-none group touch-none ${
         !isExporting && isSelected
-          ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-black/50 z-40'
+          ? 'outline outline-2 outline-white outline-offset-1 z-40'
           : 'z-10'
-      } ${isDragOver ? 'ring-2 ring-emerald-400 scale-[1.03] z-50' : ''}`}
+      } ${isDragOver ? 'outline outline-2 outline-dashed outline-white scale-[1.02] z-50' : ''}`}
       style={{
         borderRadius: `${borderRadius}px`,
         ...borderStyle,
@@ -299,8 +299,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
           )}
 
           {!isExporting && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-7 h-7 rounded-full bg-black/60 text-white/90 backdrop-blur-xs">
-              <ImagePlus className="w-3.5 h-3.5" />
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-7 h-7 rounded-full bg-black/75 text-white backdrop-blur-xs">
+              <ImageSquare size={14} weight="bold" />
             </div>
           )}
         </div>
@@ -337,16 +337,15 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               type="button"
               draggable={false}
               title="Replace Photo"
-              className="p-1 hover:bg-white/10 active:scale-[0.94] rounded transition-all cursor-pointer"
+              className="p-1 hover:bg-white/10 active:scale-[0.97] rounded transition-all text-white/80 hover:text-white cursor-pointer"
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               onClick={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
                 fileInputRef.current?.click();
               }}
             >
-              <ImagePlus className="w-3.5 h-3.5 text-blue-400" />
+              <ImageSquare size={14} weight="bold" />
             </button>
 
             {/* Toggle Border */}
@@ -354,18 +353,17 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               type="button"
               draggable={false}
               title={hasBorder ? 'Hide Frame Border' : 'Show Frame Border'}
-              className={`p-1 rounded transition-all active:scale-[0.94] cursor-pointer ${
-                hasBorder ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-white/70'
+              className={`p-1 rounded transition-all active:scale-[0.97] cursor-pointer ${
+                hasBorder ? 'bg-white text-black' : 'hover:bg-white/10 text-white/70 hover:text-white'
               }`}
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               onClick={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
                 toggleSlotBorder(slotId);
               }}
             >
-              <Square className="w-3.5 h-3.5" />
+              <Square size={14} weight={hasBorder ? 'fill' : 'bold'} />
             </button>
 
             {/* Reset Zoom & Pan */}
@@ -374,16 +372,15 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Reset Crop & Fit (Double-click)"
-                className="p-1 hover:bg-white/10 active:scale-[0.94] rounded transition-all text-white/80 cursor-pointer"
+                className="p-1 hover:bg-white/10 active:scale-[0.97] rounded transition-all text-white/80 hover:text-white cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
-                  e.preventDefault();
                   e.stopPropagation();
                   updateSlot(slotId, { scale: 1.0, x: 0, y: 0 });
                 }}
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <ArrowsClockwise size={14} weight="bold" />
               </button>
             )}
 
@@ -393,16 +390,15 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Clear photo to empty border"
-                className="p-1 hover:bg-red-500/20 active:scale-[0.94] text-red-400 rounded transition-all cursor-pointer"
+                className="p-1 hover:bg-white/10 active:scale-[0.97] text-white/80 hover:text-white rounded transition-all cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
-                  e.preventDefault();
                   e.stopPropagation();
                   clearSlot(slotId);
                 }}
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash size={14} weight="bold" />
               </button>
             )}
           </motion.div>
