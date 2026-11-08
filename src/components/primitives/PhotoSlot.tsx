@@ -65,8 +65,10 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
 
   // Handle pointer down for pan gesture inside photo
   const handlePointerDown = (e: React.PointerEvent) => {
-    // Never hijack clicks/gestures on buttons (floating toolbar, etc.)
-    if ((e.target as HTMLElement).closest('button')) return;
+    // Never hijack clicks/gestures on buttons or frame action bar
+    if ((e.target as HTMLElement).closest('.frame-action-bar') || (e.target as HTMLElement).closest('button')) {
+      return;
+    }
     if (isExporting || !imageUrl || frameStyle !== 'photo') return;
     
     // Select this slot
@@ -131,6 +133,10 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   // Drag and drop handlers for replacing/filling photo or swapping
   const handleDragStart = (e: React.DragEvent) => {
     if (isExporting || !imageUrl) return;
+    if ((e.target as HTMLElement).closest('.frame-action-bar') || (e.target as HTMLElement).closest('button')) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('text/plain', slotId);
     setDraggedSlotId(slotId);
   };
@@ -315,21 +321,11 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
             animate="animate"
             exit="exit"
             draggable={false}
-            className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 neu-raised px-2 py-1.5 rounded-2xl shadow-2xl text-white z-50 text-xs ${
+            className={`frame-action-bar absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#141722] p-1.5 rounded-2xl shadow-[var(--weld-extruded)] text-white z-50 text-xs ${
               isTopRow ? 'top-full mt-2' : '-top-12'
             }`}
-            onPointerDownCapture={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
-            onMouseDownCapture={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
-            onPointerMove={(e) => e.stopPropagation()}
-            onPointerUp={(e) => e.stopPropagation()}
-            onTouchStartCapture={(e) => e.stopPropagation()}
-            onTouchEndCapture={(e) => e.stopPropagation()}
-            onDragStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Replace Photo */}
@@ -337,7 +333,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               type="button"
               draggable={false}
               title="Replace Photo"
-              className="p-1.5 neu-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
+              className="p-1.5 weld-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               onClick={(e) => {
@@ -354,7 +350,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
               draggable={false}
               title={hasBorder ? 'Hide Frame Border' : 'Show Frame Border'}
               className={`p-1.5 rounded-xl cursor-pointer ${
-                hasBorder ? 'neu-button-active text-white' : 'neu-button text-zinc-300 hover:text-white'
+                hasBorder ? 'weld-button-active text-white' : 'weld-button text-zinc-300 hover:text-white'
               }`}
               onPointerDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
@@ -372,7 +368,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Reset Crop & Fit (Double-click)"
-                className="p-1.5 neu-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
+                className="p-1.5 weld-button rounded-xl text-zinc-300 hover:text-white cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
@@ -390,7 +386,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
                 type="button"
                 draggable={false}
                 title="Clear photo to empty border"
-                className="p-1.5 neu-button rounded-xl text-zinc-400 hover:text-white cursor-pointer"
+                className="p-1.5 weld-button rounded-xl text-zinc-400 hover:text-white cursor-pointer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {

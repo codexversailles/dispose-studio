@@ -3,7 +3,7 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { BackgroundCanvas } from '../primitives/BackgroundCanvas';
 import { PhotoSlot } from '../primitives/PhotoSlot';
 import { EditableTextLayer } from '../primitives/EditableTextLayer';
-import { DotsSixVertical } from '@phosphor-icons/react';
+import { ArrowsOutCardinal } from '@phosphor-icons/react';
 import { SnapGuide } from '../../core/types/template';
 
 export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean }>(
@@ -155,10 +155,10 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
             <div className="absolute -inset-2.5 rounded-2xl pointer-events-none ring-1.5 ring-white/80 shadow-[0_0_24px_rgba(255,255,255,0.22)] bg-white/[0.02] z-30 transition-opacity animate-in fade-in duration-150" />
           )}
 
-          {/* Welded Drag Handle for Entire Grid (Pure Drag Icon) */}
+          {/* Welded Drag Handle for Entire Grid (Pure Drag Icon at Top-Left) */}
           {!isExporting && (
             <div
-              className={`absolute -top-7 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none transition-all ${
+              className={`absolute -top-8 left-0 w-7 h-7 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none transition-all ${
                 isDraggingGrid
                   ? 'weld-button-active text-white scale-110'
                   : 'weld-button text-zinc-300 hover:text-white'
@@ -172,7 +172,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
               title="Drag to reposition photo grid (snaps to center)"
               aria-label="Reposition Grid"
             >
-              <DotsSixVertical size={16} weight="bold" />
+              <ArrowsOutCardinal size={15} weight="bold" />
             </div>
           )}
 
