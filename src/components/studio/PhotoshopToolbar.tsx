@@ -5,6 +5,7 @@ import { compressMultipleImages } from '../../core/utils/imageCompressor';
 import {
   UploadSimple,
   ImageSquare,
+  SquaresFour,
   CalendarBlank,
   Shuffle,
   ArrowCounterClockwise,
@@ -30,6 +31,8 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
   const activeInspectorTab = useEditorStore((s) => s.activeInspectorTab);
   const selectedSlotId = useEditorStore((s) => s.selectedSlotId);
   const selectedTextId = useEditorStore((s) => s.selectedTextId);
+  const isGridSelected = useEditorStore((s) => s.isGridSelected);
+  const selectGrid = useEditorStore((s) => s.selectGrid);
   const isMobileInspectorOpen = useEditorStore((s) => s.isMobileInspectorOpen);
   const setIsMobileInspectorOpen = useEditorStore((s) => s.setIsMobileInspectorOpen);
 
@@ -102,6 +105,25 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             </button>
             <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-xl neu-raised text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-2xl text-left">
               Background settings
+            </div>
+          </div>
+
+          {/* Grid Selection & Settings */}
+          <div className="relative group w-full flex justify-center">
+            <button
+              type="button"
+              onClick={() => selectGrid(!isGridSelected)}
+              className={`w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer ${
+                isGridSelected
+                  ? 'neu-button-active text-white'
+                  : 'neu-button text-zinc-300 hover:text-white'
+              }`}
+              aria-label="Select Photo Grid"
+            >
+              <SquaresFour size={18} weight="bold" />
+            </button>
+            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-xl neu-raised text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-2xl text-left">
+              Select & move grid
             </div>
           </div>
 
@@ -260,6 +282,24 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
         >
           <ImageSquare size={18} weight="bold" />
           <span className="text-[9px] mt-0.5 tracking-normal">Backdrop</span>
+        </button>
+
+        {/* Grid Selection */}
+        <button
+          type="button"
+          onClick={() => {
+            selectGrid(!isGridSelected);
+            setIsMobileInspectorOpen(true);
+          }}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl active:scale-[0.97] transition-transform cursor-pointer ${
+            isGridSelected
+              ? 'neu-pressed-sm text-white font-medium'
+              : 'text-zinc-300 hover:text-white'
+          }`}
+          aria-label="Select Grid"
+        >
+          <SquaresFour size={18} weight="bold" />
+          <span className="text-[9px] mt-0.5 tracking-normal">Grid</span>
         </button>
 
         {/* Date Numbers Toggle */}

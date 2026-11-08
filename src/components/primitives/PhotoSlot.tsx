@@ -20,6 +20,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   const isExporting = useEditorStore((s) => s.isExporting);
   const draggedSlotId = useEditorStore((s) => s.draggedSlotId);
   const showDateNumbers = useEditorStore((s) => s.calendarConfig?.showDateNumbers ?? false);
+  const gridBorderColor = useEditorStore((s) => s.gridConfig.borderColor);
 
   const selectSlot = useEditorStore((s) => s.selectSlot);
   const updateSlot = useEditorStore((s) => s.updateSlot);
@@ -79,6 +80,9 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     panStartRef.current = { x: e.clientX, y: e.clientY };
     slotStartOffsetRef.current = { x, y };
 
+    // Pause history tracking during continuous pan to avoid cluttering undo/redo
+    useEditorStore.temporal?.getState()?.pause();
+
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     } catch {
@@ -105,6 +109,22 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!isPanning) return;
     setIsPanning(false);
+
+    // Commit final drop position as a single clean undo/redo step
+    const currentSlot = useEditorStore.getState().slots[slotId];
+    const finalX = currentSlot?.x ?? 0;
+    const finalY = currentSlot?.y ?? 0;
+    const startX = slotStartOffsetRef.current.x;
+    const startY = slotStartOffsetRef.current.y;
+
+    if (finalX !== startX || finalY !== startY) {
+      updateSlot(slotId, { x: startX, y: startY });
+      useEditorStore.temporal?.getState()?.resume();
+      updateSlot(slotId, { x: finalX, y: finalY });
+    } else {
+      useEditorStore.temporal?.getState()?.resume();
+    }
+
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {
@@ -203,7 +223,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     ? {
         borderWidth: `${borderWidth}px`,
         borderStyle: 'solid',
-        borderColor: borderColor || '#ffffff',
+        borderColor: borderColor || gridBorderColor || '#ffffff',
       }
     : {
         borderWidth: '0px',
@@ -222,7 +242,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
 
   return (
     <div
-      className={`relative w-full ${aspectClass} box-border transition-shadow select-none group touch-none ${
+      className={`photo-slot-item relative w-full ${aspectClass} box-border transition-shadow select-none group touch-none ${
         !isExporting && isSelected ? 'z-40' : 'z-10'
       } ${isDragOver ? 'scale-[1.02] z-50' : ''}`}
       style={{

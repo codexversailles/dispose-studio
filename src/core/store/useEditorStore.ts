@@ -35,9 +35,11 @@ export interface EditorState {
   activeInspectorTab: 'canvas' | 'slot' | 'text' | 'calendar';
   activeSnapGuides: SnapGuide[];
   isMobileInspectorOpen: boolean;
+  isGridSelected: boolean;
 
   // Actions
   setIsMobileInspectorOpen: (open: boolean) => void;
+  selectGrid: (selected: boolean) => void;
   setTemplate: (templateId: string) => void;
   updateBackground: (partial: Partial<BackgroundConfig>) => void;
   updateGridConfig: (partial: Partial<GridConfig>) => void;
@@ -108,6 +110,7 @@ export const useEditorStore = create<EditorState>()(
       activeInspectorTab: 'canvas',
       activeSnapGuides: [],
       isMobileInspectorOpen: false,
+      isGridSelected: false,
 
       setTemplate: (templateId: string) => {
         const tmpl = getTemplateById(templateId);
@@ -140,9 +143,24 @@ export const useEditorStore = create<EditorState>()(
       },
 
       updateGridConfig: (partial) => {
-        set((state) => ({
-          gridConfig: { ...state.gridConfig, ...partial },
-        }));
+        set((state) => {
+          const newGrid = { ...state.gridConfig, ...partial };
+          let updatedSlots = state.slots;
+          if (partial.borderColor !== undefined || partial.borderWidth !== undefined) {
+            updatedSlots = {};
+            for (const [id, slot] of Object.entries(state.slots)) {
+              updatedSlots[id] = {
+                ...slot,
+                ...(partial.borderColor !== undefined ? { borderColor: partial.borderColor } : {}),
+                ...(partial.borderWidth !== undefined ? { borderWidth: partial.borderWidth } : {}),
+              };
+            }
+          }
+          return {
+            gridConfig: newGrid,
+            slots: updatedSlots,
+          };
+        });
       },
 
       updateCalendarConfig: (partial) => {
@@ -399,6 +417,7 @@ export const useEditorStore = create<EditorState>()(
         set({
           selectedSlotId: slotId,
           selectedTextId: null,
+          isGridSelected: false,
           activeInspectorTab: slotId ? 'slot' : 'canvas',
           isMobileInspectorOpen: Boolean(slotId),
         });
@@ -408,8 +427,19 @@ export const useEditorStore = create<EditorState>()(
         set({
           selectedTextId: textId,
           selectedSlotId: null,
+          isGridSelected: false,
           activeInspectorTab: textId ? 'text' : 'canvas',
           isMobileInspectorOpen: Boolean(textId),
+        });
+      },
+
+      selectGrid: (selected) => {
+        set({
+          isGridSelected: selected,
+          selectedSlotId: null,
+          selectedTextId: null,
+          activeInspectorTab: 'canvas',
+          isMobileInspectorOpen: selected,
         });
       },
 

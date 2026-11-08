@@ -7,8 +7,6 @@ interface EditableTextLayerProps {
   textId: string;
 }
 
-type ResizeHandleType = 'right' | 'left' | 'bottom' | 'top' | 'br' | 'bl' | 'tr' | 'tl';
-
 export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) => {
   const textLayer = useEditorStore((s) => s.textLayers[textId]);
   const isSelected = useEditorStore((s) => s.selectedTextId === textId);
@@ -21,28 +19,10 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
 
   const [isInlineEditing, setIsInlineEditing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [resizingHandle, setResizingHandle] = useState<ResizeHandleType | null>(null);
-  const [liveDimensions, setLiveDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const dragStartRef = useRef<{ clientX: number; clientY: number; startX: number; startY: number }>({
     clientX: 0,
     clientY: 0,
-    startX: 180,
-    startY: 100,
-  });
-
-  const resizeStartRef = useRef<{
-    clientX: number;
-    clientY: number;
-    startWidth: number;
-    startHeight: number;
-    startX: number;
-    startY: number;
-  }>({
-    clientX: 0,
-    clientY: 0,
-    startWidth: 280,
-    startHeight: 40,
     startX: 180,
     startY: 100,
   });
@@ -95,7 +75,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     (position.top ? parseInt(position.top, 10) || 120 : position.bottom ? 580 : 320);
 
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (isExporting || isInlineEditing || resizingHandle) return;
+    if (isExporting || isInlineEditing) return;
 
     selectText(textId);
 
@@ -110,6 +90,9 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       startY: currentY,
     };
 
+    // Pause history tracking during continuous text drag
+    useEditorStore.temporal?.getState()?.pause();
+
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     } catch {
@@ -118,7 +101,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || isExporting || isInlineEditing || resizingHandle) return;
+    if (!isDragging || isExporting || isInlineEditing) return;
 
     const artboard = document.getElementById('dumpstudio-artboard');
     if (!artboard) return;
@@ -158,109 +141,22 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     if (!isDragging) return;
     setIsDragging(false);
     setActiveSnapGuides([]);
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-  };
 
-  // ================= Canva-Style Direct Manipulation Resizing =================
-  const handleResizePointerDown = (e: React.PointerEvent, handle: ResizeHandleType) => {
-    e.stopPropagation();
-    if (isExporting || isInlineEditing) return;
+    // Commit final drop position as a single clean undo/redo step
+    const currentText = useEditorStore.getState().textLayers[textId];
+    const finalX = currentText?.position?.x ?? currentX;
+    const finalY = currentText?.position?.y ?? currentY;
+    const startX = dragStartRef.current.startX;
+    const startY = dragStartRef.current.startY;
 
-    const artboard = document.getElementById('dumpstudio-artboard');
-    if (!artboard || !elementRef.current) return;
-
-    const currentRect = elementRef.current.getBoundingClientRect();
-    const artboardRect = artboard.getBoundingClientRect();
-    const scale = artboardRect.width / 360;
-
-    const startW = currentRect.width / scale;
-    const startH = currentRect.height / scale;
-
-    setResizingHandle(handle);
-    setLiveDimensions({ width: Math.round(startW), height: Math.round(startH) });
-
-    resizeStartRef.current = {
-      clientX: e.clientX,
-      clientY: e.clientY,
-      startWidth: startW,
-      startHeight: startH,
-      startX: currentX,
-      startY: currentY,
-    };
-
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-  };
-
-  const handleResizePointerMove = (e: React.PointerEvent) => {
-    if (!resizingHandle || isExporting || isInlineEditing) return;
-
-    const artboard = document.getElementById('dumpstudio-artboard');
-    if (!artboard) return;
-
-    const artboardRect = artboard.getBoundingClientRect();
-    const scale = artboardRect.width / 360;
-
-    const dx = (e.clientX - resizeStartRef.current.clientX) / scale;
-    const dy = (e.clientY - resizeStartRef.current.clientY) / scale;
-
-    const { startWidth, startHeight, startX, startY } = resizeStartRef.current;
-
-    let newWidth = startWidth;
-    let newHeight = startHeight;
-    let newX = startX;
-    let newY = startY;
-
-    // Horizontal handle adjustments
-    if (resizingHandle === 'right' || resizingHandle === 'br' || resizingHandle === 'tr') {
-      newWidth = Math.max(60, Math.min(340, startWidth + dx));
-      const appliedDx = newWidth - startWidth;
-      newX = Math.round(startX + appliedDx / 2);
-    } else if (resizingHandle === 'left' || resizingHandle === 'bl' || resizingHandle === 'tl') {
-      newWidth = Math.max(60, Math.min(340, startWidth - dx));
-      const appliedDx = -(newWidth - startWidth);
-      newX = Math.round(startX + appliedDx / 2);
+    if (finalX !== startX || finalY !== startY) {
+      updateTextPosition(textId, startX, startY);
+      useEditorStore.temporal?.getState()?.resume();
+      updateTextPosition(textId, finalX, finalY);
+    } else {
+      useEditorStore.temporal?.getState()?.resume();
     }
 
-    // Vertical handle adjustments
-    if (resizingHandle === 'bottom' || resizingHandle === 'br' || resizingHandle === 'bl') {
-      newHeight = Math.max(20, Math.min(420, startHeight + dy));
-      const appliedDy = newHeight - startHeight;
-      newY = Math.round(startY + appliedDy / 2);
-    } else if (resizingHandle === 'top' || resizingHandle === 'tr' || resizingHandle === 'tl') {
-      newHeight = Math.max(20, Math.min(420, startHeight - dy));
-      const appliedDy = -(newHeight - startHeight);
-      newY = Math.round(startY + appliedDy / 2);
-    }
-
-    newWidth = Math.round(newWidth);
-    newHeight = Math.round(newHeight);
-
-    setLiveDimensions({ width: newWidth, height: newHeight });
-
-    updateText(textId, {
-      width: newWidth,
-      height: newHeight,
-      maxWidth: newWidth,
-      position: {
-        ...position,
-        x: newX,
-        y: newY,
-      },
-    });
-  };
-
-  const handleResizePointerUp = (e: React.PointerEvent) => {
-    if (!resizingHandle) return;
-    setResizingHandle(null);
-    setLiveDimensions(null);
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {
@@ -334,92 +230,6 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         >
           <ArrowsOutCardinal size={12} weight="bold" />
         </div>
-      )}
-
-      {/* Live Dimension Tooltip while resizing */}
-      {!isExporting && isSelected && liveDimensions && (
-        <div className="absolute -top-11 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-[#141722] border border-white/10 text-[10px] text-zinc-200 shadow-xl pointer-events-none whitespace-nowrap z-50 rounded-lg">
-          W: {liveDimensions.width}px × H: {liveDimensions.height}px
-        </div>
-      )}
-
-      {/* ================= Canva-Style Edge and Corner Resize Handles ================= */}
-      {!isExporting && isSelected && !isInlineEditing && (
-        <>
-          {/* Left Edge Handle (Width) */}
-          <div
-            title="Drag to resize column width"
-            className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'left')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-
-          {/* Right Edge Handle (Width) */}
-          <div
-            title="Drag to resize column width"
-            className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-4 bg-white border border-black rounded-full cursor-ew-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'right')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-
-          {/* Top Edge Handle (Height) */}
-          <div
-            title="Drag to resize column height"
-            className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-black rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'top')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-
-          {/* Bottom Edge Handle (Height) */}
-          <div
-            title="Drag to resize column height"
-            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-white border border-black rounded-full cursor-ns-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'bottom')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-
-          {/* Corner Handles */}
-          <div
-            title="Drag to resize"
-            className="absolute -top-1.5 -left-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'tl')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-          <div
-            title="Drag to resize"
-            className="absolute -top-1.5 -right-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'tr')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-          <div
-            title="Drag to resize"
-            className="absolute -bottom-1.5 -left-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nesw-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'bl')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-          <div
-            title="Drag to resize"
-            className="absolute -bottom-1.5 -right-1.5 w-2.5 h-2.5 bg-white border border-black rounded-full cursor-nwse-resize hover:scale-125 active:scale-125 transition-transform shadow-md z-40"
-            onPointerDown={(e) => handleResizePointerDown(e, 'br')}
-            onPointerMove={handleResizePointerMove}
-            onPointerUp={handleResizePointerUp}
-            onPointerCancel={handleResizePointerUp}
-          />
-        </>
       )}
 
       {isInlineEditing && !isExporting ? (

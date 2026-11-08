@@ -3,7 +3,6 @@ import { useEditorStore } from '../../core/store/useEditorStore';
 import { BackgroundCanvas } from '../primitives/BackgroundCanvas';
 import { PhotoSlot } from '../primitives/PhotoSlot';
 import { EditableTextLayer } from '../primitives/EditableTextLayer';
-import { ArrowsOutCardinal } from '@phosphor-icons/react';
 import { SnapGuide } from '../../core/types/template';
 
 export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean }>(
@@ -14,6 +13,8 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     const calendarConfig = useEditorStore((s) => s.calendarConfig);
     const selectSlot = useEditorStore((s) => s.selectSlot);
     const selectText = useEditorStore((s) => s.selectText);
+    const selectGrid = useEditorStore((s) => s.selectGrid);
+    const isGridSelected = useEditorStore((s) => s.isGridSelected);
     const setActiveInspectorTab = useEditorStore((s) => s.setActiveInspectorTab);
     const isExporting = useEditorStore((s) => s.isExporting);
     const activeSnapGuides = useEditorStore((s) => s.activeSnapGuides);
@@ -21,7 +22,6 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
     const updateGridPosition = useEditorStore((s) => s.updateGridPosition);
 
     const [isDraggingGrid, setIsDraggingGrid] = useState(false);
-    const [isHandleHovered, setIsHandleHovered] = useState(false);
     const gridDragStart = useRef({ clientX: 0, clientY: 0, startX: 0, startY: 0 });
 
     const slotList = Object.values(slots);
@@ -31,12 +31,17 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
       if (isExporting) return;
       e.stopPropagation();
       setIsDraggingGrid(true);
+      selectGrid(true);
       gridDragStart.current = {
         clientX: e.clientX,
         clientY: e.clientY,
         startX: gridX,
         startY: gridY,
       };
+
+      // Pause history tracking during continuous grid move
+      useEditorStore.temporal?.getState()?.pause();
+
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     };
 
@@ -81,6 +86,22 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
       if (!isDraggingGrid) return;
       setIsDraggingGrid(false);
       setActiveSnapGuides([]);
+
+      // Commit final position in ONE single clean undo/redo step
+      const finalGrid = useEditorStore.getState().gridConfig;
+      const finalX = finalGrid.x ?? 0;
+      const finalY = finalGrid.y ?? 0;
+      const startX = gridDragStart.current.startX;
+      const startY = gridDragStart.current.startY;
+
+      if (finalX !== startX || finalY !== startY) {
+        updateGridPosition(startX, startY);
+        useEditorStore.temporal?.getState()?.resume();
+        updateGridPosition(finalX, finalY);
+      } else {
+        useEditorStore.temporal?.getState()?.resume();
+      }
+
       try {
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
       } catch {
@@ -102,6 +123,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
           if (!isExporting) {
             selectSlot(null);
             selectText(null);
+            selectGrid(false);
             setActiveInspectorTab('canvas');
           }
         }}
@@ -140,40 +162,40 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
           <EditableTextLayer key={textId} textId={textId} />
         ))}
 
-        {/* Moveable Grid Container (with Canva-style drag handle) */}
+        {/* Moveable Grid Container (Click to select, drag to reposition) */}
         <div
-          className="absolute transition-transform duration-75"
+          className={`absolute transition-transform duration-75 ${
+            isGridSelected ? 'cursor-grab active:cursor-grabbing' : ''
+          }`}
           style={{
             top: `${padding.top}px`,
             left: `${padding.left}px`,
             right: `${padding.right}px`,
             transform: `translate(${gridX}px, ${gridY}px)`,
           }}
+          onClick={(e) => {
+            if (!isExporting) {
+              const target = e.target as HTMLElement;
+              // If clicked on grid padding, gap, or header (not inside a slot or button)
+              if (!target.closest('.photo-slot-item') && !target.closest('button') && !target.closest('.frame-action-bar')) {
+                e.stopPropagation();
+                selectGrid(true);
+              }
+            }
+          }}
+          onPointerDown={(e) => {
+            if (isExporting) return;
+            const target = e.target as HTMLElement;
+            if (target.closest('.frame-action-bar') || target.closest('button')) return;
+            // Drag grid if grid is already selected or if clicking on grid container padding/gaps
+            if (isGridSelected || !target.closest('.photo-slot-item')) {
+              handleGridPointerDown(e);
+            }
+          }}
         >
-          {/* Grid Boundary Highlight when Interacted or Dragged */}
-          {!isExporting && (isDraggingGrid || isHandleHovered) && (
+          {/* Grid Boundary Highlight when Selected or Dragged */}
+          {!isExporting && (isDraggingGrid || isGridSelected) && (
             <div className="absolute -inset-2.5 rounded-2xl pointer-events-none bg-white/[0.03] shadow-[0_0_30px_rgba(0,0,0,0.5)] z-30 transition-opacity animate-in fade-in duration-150" />
-          )}
-
-          {/* Welded Drag Handle for Entire Grid (Pure Drag Icon at Top-Left) */}
-          {!isExporting && (
-            <div
-              className={`absolute -top-8 left-0 w-7 h-7 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none transition-all ${
-                isDraggingGrid
-                  ? 'weld-button-active text-white scale-110'
-                  : 'weld-button text-zinc-300 hover:text-white'
-              }`}
-              onPointerDown={handleGridPointerDown}
-              onPointerMove={handleGridPointerMove}
-              onPointerUp={handleGridPointerUp}
-              onPointerCancel={handleGridPointerUp}
-              onMouseEnter={() => setIsHandleHovered(true)}
-              onMouseLeave={() => setIsHandleHovered(false)}
-              title="Drag to reposition photo grid (snaps to center)"
-              aria-label="Reposition Grid"
-            >
-              <ArrowsOutCardinal size={15} weight="bold" />
-            </div>
           )}
 
           {/* Calendar Weekday Header (if enabled) */}

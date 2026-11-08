@@ -29,6 +29,8 @@ export const InspectorPanel: React.FC = () => {
   const selectText = useEditorStore((s) => s.selectText);
   const isMobileInspectorOpen = useEditorStore((s) => s.isMobileInspectorOpen);
   const setIsMobileInspectorOpen = useEditorStore((s) => s.setIsMobileInspectorOpen);
+  const isGridSelected = useEditorStore((s) => s.isGridSelected);
+  const selectGrid = useEditorStore((s) => s.selectGrid);
 
   // Store data & actions
   const background = useEditorStore((s) => s.background);
@@ -641,14 +643,6 @@ export const InspectorPanel: React.FC = () => {
               />
             </div>
 
-            {/* Canvas Direct Resizing Hint */}
-            <div className="p-3 neu-well rounded-2xl text-zinc-400 flex items-center justify-between text-[11px]">
-              <span className="text-left">Column resize</span>
-              <span className="text-[10px] text-zinc-300 text-right">
-                Drag handles on canvas
-              </span>
-            </div>
-
             {/* Drop Shadow for Readability */}
             <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
@@ -1154,24 +1148,83 @@ export const InspectorPanel: React.FC = () => {
               </div>
             </div>
 
-            {/* Grid Position & Spacing */}
+            {/* Grid Position, Spacing & Color */}
             <div className="space-y-3 pt-3 border-t border-[var(--neu-border-highlight)]">
               <div className="flex items-center justify-between">
                 <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider text-left block">
                   Grid Layout & Spacing
                 </label>
-                {(gridConfig.x !== 0 || gridConfig.y !== 0) && (
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
-                    onClick={() => updateGridPosition(0, 0)}
-                    className="neu-button px-2.5 py-1 rounded-xl text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
+                    onClick={() => selectGrid(!isGridSelected)}
+                    className={`px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer transition-all ${
+                      isGridSelected
+                        ? 'neu-button-active text-white'
+                        : 'neu-button text-zinc-300 hover:text-white'
+                    }`}
                   >
-                    Reset Center
+                    {isGridSelected ? 'Move Grid Active' : 'Select Grid'}
                   </button>
-                )}
+                  {(gridConfig.x !== 0 || gridConfig.y !== 0) && (
+                    <button
+                      type="button"
+                      onClick={() => updateGridPosition(0, 0)}
+                      className="neu-button px-2.5 py-1 rounded-xl text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
+                    >
+                      Reset Center
+                    </button>
+                  )}
+                </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px]">
+              {/* Grid Border Color Option */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-white/70 text-left">Grid Border Color</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-zinc-400 text-xs uppercase">
+                      {gridConfig.borderColor || '#ffffff'}
+                    </span>
+                    <input
+                      type="color"
+                      value={gridConfig.borderColor || '#ffffff'}
+                      onChange={(e) => updateGridConfig({ borderColor: e.target.value })}
+                      className="w-5 h-5 rounded-md border-0 p-0 cursor-pointer bg-transparent"
+                      title="Custom Color"
+                    />
+                  </div>
+                </div>
+
+                {/* Preset Color Swatches */}
+                <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                  {[
+                    { label: 'White', value: '#ffffff' },
+                    { label: 'Off-White', value: '#f0f2f5' },
+                    { label: 'Warm Cream', value: '#e8e5de' },
+                    { label: 'Charcoal', value: '#27272a' },
+                    { label: 'Deep Black', value: '#0a0a0c' },
+                    { label: 'Accent Orange', value: '#ea580c' },
+                    { label: 'Soft Sage', value: '#84a98c' },
+                    { label: 'Sky Blue', value: '#38bdf8' },
+                  ].map((preset) => (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      title={preset.label}
+                      onClick={() => updateGridConfig({ borderColor: preset.value })}
+                      className={`w-5 h-5 rounded-md transition-transform cursor-pointer ${
+                        (gridConfig.borderColor || '#ffffff').toLowerCase() === preset.value.toLowerCase()
+                          ? 'scale-110 shadow-sm ring-1 ring-white/60'
+                          : 'opacity-70 hover:opacity-100 hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: preset.value }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] pt-1">
                 <span className="text-white/70 text-left">Grid Gap</span>
                 <span className="font-mono text-zinc-400 text-right tabular-nums">{gridConfig.gap}px</span>
               </div>
