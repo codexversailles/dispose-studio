@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEditorStore } from '../../core/store/useEditorStore';
+import { useEditorStore, flushPendingHistory } from '../../core/store/useEditorStore';
 import { POPOVER_VARIANTS } from '../../core/motion/transitions';
 import { compressImageFile } from '../../core/utils/imageCompressor';
 import {
@@ -80,10 +80,8 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     isPanningRef.current = true;
     setIsPanning(true);
     panStartRef.current = { x: e.clientX, y: e.clientY };
-    slotStartOffsetRef.current = { x, y };
-
-    // Pause history tracking during continuous pan to avoid cluttering undo/redo
-    useEditorStore.temporal?.getState()?.pause();
+    const current = useEditorStore.getState().slots[slotId];
+    slotStartOffsetRef.current = { x: current?.x ?? x, y: current?.y ?? y };
 
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -114,19 +112,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
     setIsPanning(false);
 
     // Commit final drop position as a single clean undo/redo step
-    const currentSlot = useEditorStore.getState().slots[slotId];
-    const finalX = currentSlot?.x ?? 0;
-    const finalY = currentSlot?.y ?? 0;
-    const startX = slotStartOffsetRef.current.x;
-    const startY = slotStartOffsetRef.current.y;
-
-    if (finalX !== startX || finalY !== startY) {
-      updateSlot(slotId, { x: startX, y: startY });
-      useEditorStore.temporal?.getState()?.resume();
-      updateSlot(slotId, { x: finalX, y: finalY });
-    } else {
-      useEditorStore.temporal?.getState()?.resume();
-    }
+    flushPendingHistory();
 
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);

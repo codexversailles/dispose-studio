@@ -2,12 +2,7 @@ import React, { useRef, useState, useEffect, RefObject } from 'react';
 import { useEditorStore } from '../../core/store/useEditorStore';
 import { compressMultipleImages } from '../../core/utils/imageCompressor';
 import { StoryArtboard } from './StoryArtboard';
-import {
-  CloudArrowUp,
-  MagnifyingGlassPlus,
-  MagnifyingGlassMinus,
-  ArrowsOut,
-} from '@phosphor-icons/react';
+import { CloudArrowUp } from '@phosphor-icons/react';
 
 interface CanvasViewportProps {
   artboardRef: RefObject<HTMLDivElement | null>;
@@ -22,6 +17,10 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
   const zoomLevel = useEditorStore((s) => s.zoomLevel);
   const setZoomLevel = useEditorStore((s) => s.setZoomLevel);
   const bulkFillSlots = useEditorStore((s) => s.bulkFillSlots);
+
+  const initialPinchDistRef = useRef<number | null>(null);
+  const initialPinchScaleRef = useRef<number>(1);
+  const lastTapTimeRef = useRef<number>(0);
 
   // Auto-fit calculation
   useEffect(() => {
@@ -50,6 +49,75 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
     window.addEventListener('resize', updateScale);
     return () => window.removeEventListener('resize', updateScale);
   }, [zoomLevel]);
+
+  // Touch Pinch-to-Zoom (Mobile) & Trackpad/Ctrl+Wheel Zoom
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const getDistance = (touches: TouchList) => {
+      return Math.hypot(
+        touches[0].clientX - touches[1].clientX,
+        touches[0].clientY - touches[1].clientY
+      );
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        initialPinchDistRef.current = getDistance(e.touches);
+        initialPinchScaleRef.current = scale;
+      } else if (e.touches.length === 1) {
+        const now = Date.now();
+        // Double-tap on canvas background resets zoom to auto-fit
+        if (now - lastTapTimeRef.current < 300) {
+          setZoomLevel(0);
+        }
+        lastTapTimeRef.current = now;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && initialPinchDistRef.current !== null) {
+        e.preventDefault();
+        const currentDist = getDistance(e.touches);
+        const factor = currentDist / initialPinchDistRef.current;
+        const nextScale = Math.min(Math.max(0.35, initialPinchScaleRef.current * factor), 3.0);
+        setScale(nextScale);
+        setZoomLevel(nextScale);
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        initialPinchDistRef.current = null;
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = -e.deltaY * 0.005;
+        const nextScale = Math.min(Math.max(0.35, scale + delta), 3.0);
+        setScale(nextScale);
+        setZoomLevel(nextScale);
+      }
+    };
+
+    el.addEventListener('touchstart', handleTouchStart, { passive: false });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd);
+    el.addEventListener('touchcancel', handleTouchEnd);
+    el.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove', handleTouchMove);
+      el.removeEventListener('touchend', handleTouchEnd);
+      el.removeEventListener('touchcancel', handleTouchEnd);
+      el.removeEventListener('wheel', handleWheel);
+    };
+  }, [scale, setZoomLevel]);
 
   // Global Drag and Drop for Bulk Photos
   const handleDragOver = (e: React.DragEvent) => {
@@ -136,44 +204,6 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ artboardRef }) =
           <span>{uploadStatus}</span>
         </div>
       )}
-
-      {/* Bottom Floating Zoom Controls (Tactile Neumorphic) */}
-      <div className="absolute bottom-18 md:bottom-5 right-3 md:right-5 flex items-center gap-1.5 neu-raised-sm px-2 py-1.5 rounded-xl shadow-xl text-xs text-zinc-300 z-20">
-        <button
-          type="button"
-          title="Zoom Out"
-          className="p-1 neu-button rounded-lg text-zinc-300 hover:text-white cursor-pointer"
-          onClick={() => setZoomLevel(Math.max(0.4, (zoomLevel || scale) - 0.1))}
-        >
-          <MagnifyingGlassMinus size={14} weight="bold" />
-        </button>
-
-        <span className="neu-well text-[11px] px-2 py-0.5 rounded-md font-mono text-zinc-300 min-w-[42px] text-right tabular-nums">
-          {Math.round(scale * 100)}%
-        </span>
-
-        <button
-          type="button"
-          title="Zoom In"
-          className="p-1 neu-button rounded-lg text-zinc-300 hover:text-white cursor-pointer"
-          onClick={() => setZoomLevel(Math.min(2.0, (zoomLevel || scale) + 0.1))}
-        >
-          <MagnifyingGlassPlus size={14} weight="bold" />
-        </button>
-
-        <div className="w-[1px] h-3 bg-black/50 shadow-[1px_0_0_rgba(255,255,255,0.04)] mx-0.5" />
-
-        <button
-          type="button"
-          title="Fit to Screen"
-          className={`p-1 rounded-lg cursor-pointer ${
-            zoomLevel === 0 ? 'neu-button-active text-white' : 'neu-button text-zinc-400 hover:text-white'
-          }`}
-          onClick={() => setZoomLevel(0)}
-        >
-          <ArrowsOut size={14} weight="bold" />
-        </button>
-      </div>
     </div>
   );
 };

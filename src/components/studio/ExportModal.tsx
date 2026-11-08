@@ -32,7 +32,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   const [exportedBlob, setExportedBlob] = useState<Blob | null>(null);
 
   const pixelRatio = resolution === '4k' ? 6 : 3;
-  const fileName = `dispose-story-${resolution}.${format === 'jpeg' ? 'jpg' : 'png'}`;
+  const fileName = `idk-story-${resolution}.${format === 'jpeg' ? 'jpg' : 'png'}`;
 
   // Auto trigger render on modal open or options change
   useEffect(() => {
@@ -92,7 +92,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 <Sparkle size={18} weight="bold" className="text-white" />
                 <div className="text-left">
                   <h2 className="text-sm font-semibold tracking-tight text-white flex items-center gap-1.5">
-                    <span className="italic font-bold">Disposé</span>
+                    <span className="italic font-bold">idk.</span>
                     <span className="text-white/40">•</span>
                     <span>Export Story</span>
                   </h2>
@@ -106,17 +106,17 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-xl neu-button text-zinc-300 hover:text-white cursor-pointer"
-                aria-label="Close"
+                className="min-w-[44px] min-h-[44px] rounded-xl neu-button text-zinc-300 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all"
+                aria-label="Close Export Modal"
               >
-                <X size={16} weight="bold" />
+                <X size={18} weight="bold" />
               </button>
             </div>
 
             {/* Content Body */}
-            <div className="p-6 flex flex-col items-center">
+            <div className="p-4 sm:p-6 flex flex-col items-center">
               {/* Preview Container */}
-              <div className="relative w-48 aspect-[9/16] neu-well rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center mb-5 border border-black/40">
+              <div className="relative w-44 sm:w-48 aspect-[9/16] neu-well rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center mb-5 border border-black/40">
                 {isExportingImage ? (
                   <div className="flex flex-col items-center gap-2 text-white/70">
                     <CircleNotch size={24} weight="bold" className="animate-spin text-white" />
@@ -127,7 +127,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 ) : exportedDataUrl ? (
                   <img
                     src={exportedDataUrl}
-                    alt="Disposé Story Preview"
+                    alt="idk. Story Preview"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -142,7 +142,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setResolution('1080p')}
-                    className={`px-3 py-1 rounded-lg transition-all active:scale-[0.97] cursor-pointer ${
+                    className={`min-h-[38px] px-3.5 py-1.5 rounded-lg transition-all active:scale-[0.97] cursor-pointer flex items-center justify-center ${
                       resolution === '1080p'
                         ? 'neu-raised-sm text-white font-medium shadow-sm'
                         : 'text-zinc-400 hover:text-white'
@@ -153,7 +153,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setResolution('4k')}
-                    className={`px-3 py-1 rounded-lg transition-all active:scale-[0.97] cursor-pointer ${
+                    className={`min-h-[38px] px-3.5 py-1.5 rounded-lg transition-all active:scale-[0.97] cursor-pointer flex items-center justify-center ${
                       resolution === '4k'
                         ? 'neu-raised-sm text-white font-medium shadow-sm'
                         : 'text-zinc-400 hover:text-white'
@@ -171,7 +171,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setFormat('png')}
-                    className={`px-3 py-1 rounded-lg transition-all active:scale-[0.97] cursor-pointer ${
+                    className={`min-h-[38px] px-3.5 py-1.5 rounded-lg transition-all active:scale-[0.97] cursor-pointer flex items-center justify-center ${
                       format === 'png'
                         ? 'neu-raised-sm text-white font-medium shadow-sm'
                         : 'text-zinc-400 hover:text-white'
@@ -182,7 +182,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setFormat('jpeg')}
-                    className={`px-3 py-1 rounded-lg transition-all active:scale-[0.97] cursor-pointer ${
+                    className={`min-h-[38px] px-3.5 py-1.5 rounded-lg transition-all active:scale-[0.97] cursor-pointer flex items-center justify-center ${
                       format === 'jpeg'
                         ? 'neu-raised-sm text-white font-medium shadow-sm'
                         : 'text-zinc-400 hover:text-white'
@@ -199,9 +199,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   type="button"
                   disabled={isExportingImage || !exportedDataUrl}
                   onClick={handleDownload}
-                  className="flex-1 py-3 px-4 rounded-xl neu-button text-white disabled:opacity-40 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="flex-1 min-h-[48px] py-3.5 px-4 rounded-xl neu-button text-white disabled:opacity-40 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-98 transition-all"
                 >
-                  <DownloadSimple size={16} weight="bold" />
+                  <DownloadSimple size={17} weight="bold" />
                   <span>
                     Download {resolution === '4k' ? '4K Ultra (2160×3840)' : '1080p (1080×1920)'}
                   </span>
@@ -211,9 +211,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   type="button"
                   disabled={isExportingImage || !exportedDataUrl}
                   onClick={handleShare}
-                  className="py-3 px-4 rounded-xl neu-button text-zinc-300 hover:text-white disabled:opacity-40 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer"
+                  className="min-h-[48px] py-3.5 px-4 rounded-xl neu-button text-zinc-300 hover:text-white disabled:opacity-40 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-all"
                 >
-                  <ShareNetwork size={16} weight="bold" />
+                  <ShareNetwork size={17} weight="bold" />
                   <span>Share {resolution === '4k' ? '4K' : 'HD'}</span>
                 </button>
               </div>

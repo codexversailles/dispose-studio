@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useEditorStore } from '../../core/store/useEditorStore';
+import { useEditorStore, flushPendingHistory } from '../../core/store/useEditorStore';
 import { SnapGuide } from '../../core/types/template';
 import { ArrowsOutCardinal } from '@phosphor-icons/react';
 
@@ -112,9 +112,6 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       startY: currentY,
     };
 
-    // Pause history tracking during continuous text drag
-    useEditorStore.temporal?.getState()?.pause();
-
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     } catch {
@@ -166,19 +163,7 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     setActiveSnapGuides([]);
 
     // Commit final drop position as a single clean undo/redo step
-    const currentText = useEditorStore.getState().textLayers[textId];
-    const finalX = currentText?.position?.x ?? currentX;
-    const finalY = currentText?.position?.y ?? currentY;
-    const startX = dragStartRef.current.startX;
-    const startY = dragStartRef.current.startY;
-
-    if (finalX !== startX || finalY !== startY) {
-      updateTextPosition(textId, startX, startY);
-      useEditorStore.temporal?.getState()?.resume();
-      updateTextPosition(textId, finalX, finalY);
-    } else {
-      useEditorStore.temporal?.getState()?.resume();
-    }
+    flushPendingHistory();
 
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
@@ -214,9 +199,6 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       startX: currentX,
       startY: currentY,
     };
-
-    // Pause temporal history tracking during active drag resizing
-    useEditorStore.temporal?.getState()?.pause();
 
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -289,30 +271,8 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
     setResizingHandle(null);
     setLiveDimensions(null);
 
-    const currentText = useEditorStore.getState().textLayers[textId];
-    const finalW = currentText?.width;
-    const finalH = currentText?.height;
-    const finalX = currentText?.position?.x ?? currentX;
-    const finalY = currentText?.position?.y ?? currentY;
-
-    const { startWidth, startHeight, startX, startY } = resizeStartRef.current;
-    if (finalW !== startWidth || finalH !== startHeight || finalX !== startX || finalY !== startY) {
-      updateText(textId, {
-        width: startWidth,
-        height: startHeight,
-        maxWidth: startWidth,
-        position: { ...position, x: startX, y: startY },
-      });
-      useEditorStore.temporal?.getState()?.resume();
-      updateText(textId, {
-        width: finalW,
-        height: finalH,
-        maxWidth: finalW,
-        position: { ...position, x: finalX, y: finalY },
-      });
-    } else {
-      useEditorStore.temporal?.getState()?.resume();
-    }
+    // Commit final drop position as a single clean undo/redo step
+    flushPendingHistory();
 
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);

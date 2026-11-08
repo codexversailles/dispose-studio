@@ -81,7 +81,7 @@ export function App() {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[var(--neu-bg)] text-[var(--color-studio-text)]">
-      {/* Top Header: Just Disposé Logo (Desktop) + Quick Actions (Mobile) */}
+      {/* Top Header: Just idk. Logo (Desktop) + Quick Actions (Mobile) */}
       <TopNavbar onOpenExport={() => setIsExportOpen(true)} />
 
       {/* Studio Workspace: Left Photoshop-style Toolbar + Center Canvas Viewport + Right Inspector */}

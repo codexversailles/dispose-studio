@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useState } from 'react';
-import { useEditorStore } from '../../core/store/useEditorStore';
+import { useEditorStore, flushPendingHistory } from '../../core/store/useEditorStore';
 import { BackgroundCanvas } from '../primitives/BackgroundCanvas';
 import { PhotoSlot } from '../primitives/PhotoSlot';
 import { EditableTextLayer } from '../primitives/EditableTextLayer';
@@ -40,9 +40,6 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
         startX: gridX,
         startY: gridY,
       };
-
-      // Pause history tracking during continuous grid move
-      useEditorStore.temporal?.getState()?.pause();
 
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     };
@@ -91,19 +88,7 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
       setActiveSnapGuides([]);
 
       // Commit final position in ONE single clean undo/redo step
-      const finalGrid = useEditorStore.getState().gridConfig;
-      const finalX = finalGrid.x ?? 0;
-      const finalY = finalGrid.y ?? 0;
-      const startX = gridDragStart.current.startX;
-      const startY = gridDragStart.current.startY;
-
-      if (finalX !== startX || finalY !== startY) {
-        updateGridPosition(startX, startY);
-        useEditorStore.temporal?.getState()?.resume();
-        updateGridPosition(finalX, finalY);
-      } else {
-        useEditorStore.temporal?.getState()?.resume();
-      }
+      flushPendingHistory();
 
       try {
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
@@ -190,11 +175,14 @@ export const StoryArtboard = forwardRef<HTMLDivElement, { interactive?: boolean 
             if (isExporting) return;
             const target = e.target as HTMLElement;
             if (target.closest('.frame-action-bar') || target.closest('button')) return;
-            // Drag grid if grid is already selected or if clicking on grid container padding/gaps
-            if (isGridSelected || !target.closest('.photo-slot-item')) {
+            // Drag grid only when clicking on grid container padding/gaps (not inside a photo slot)
+            if (!target.closest('.photo-slot-item')) {
               handleGridPointerDown(e);
             }
           }}
+          onPointerMove={handleGridPointerMove}
+          onPointerUp={handleGridPointerUp}
+          onPointerCancel={handleGridPointerUp}
         >
           {/* Grid Boundary Highlight when Selected or Dragged */}
           {!isExporting && (isDraggingGrid || isGridSelected) && (

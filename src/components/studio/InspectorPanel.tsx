@@ -99,14 +99,14 @@ export const InspectorPanel: React.FC = () => {
 
       <aside
         aria-label="Inspector Panel"
-        className={`fixed inset-x-0 bottom-0 z-50 md:relative md:z-20 md:w-84 h-[75vh] md:h-full border-t md:border-t-0 md:border-l border-[var(--neu-border-highlight)] bg-[var(--neu-panel)] rounded-t-3xl md:rounded-none flex flex-col text-white select-none overflow-hidden shadow-[-6px_0_20px_rgba(0,0,0,0.35)] transition-transform duration-300 ease-out ${
+        className={`fixed inset-x-0 bottom-0 z-50 md:relative md:z-20 md:w-84 h-[78vh] md:h-full border-t md:border-t-0 md:border-l border-[var(--neu-border-highlight)] bg-[var(--neu-panel)] rounded-t-[28px] md:rounded-none flex flex-col text-white select-none overflow-hidden shadow-[-6px_0_24px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-out ${
           isMobileInspectorOpen
             ? 'translate-y-0'
             : 'translate-y-full md:translate-y-0 pointer-events-none md:pointer-events-auto'
         }`}
       >
-        {/* Mobile Pull Handle */}
-        <div className="w-10 h-1 bg-white/20 rounded-full mx-auto my-2 shrink-0 md:hidden" />
+        {/* Mobile Tactile Pull Handle */}
+        <div className="w-12 h-1.5 bg-zinc-600/60 rounded-full mx-auto my-3 shrink-0 md:hidden" />
 
         {/* Hidden file inputs */}
         <input
@@ -125,7 +125,7 @@ export const InspectorPanel: React.FC = () => {
         />
 
         {/* Top Header / Mode Switcher */}
-        <div className="p-3.5 border-b border-[var(--neu-border-highlight)] flex items-center justify-between bg-[var(--neu-panel)]">
+        <div className="px-4 py-3 border-b border-[var(--neu-border-highlight)] flex items-center justify-between bg-[var(--neu-panel)] shrink-0">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-tight text-white text-left">
             <SlidersHorizontal size={15} weight="bold" />
             <span>
@@ -146,30 +146,30 @@ export const InspectorPanel: React.FC = () => {
                   selectText(null);
                   setActiveInspectorTab('canvas');
                 }}
-                className="text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer"
+                className="min-h-[36px] px-2.5 rounded-lg neu-button text-[11px] text-zinc-300 hover:text-white font-medium cursor-pointer active:scale-95 transition-all"
               >
                 Deselect
               </button>
             )}
 
-            {/* Mobile close drawer button */}
+            {/* Mobile close drawer button (Compliant >=44x44 tap target) */}
             <button
               type="button"
               onClick={() => setIsMobileInspectorOpen(false)}
-              className="p-1.5 rounded-xl neu-button text-zinc-300 hover:text-white md:hidden cursor-pointer"
+              className="min-w-[44px] min-h-[44px] rounded-xl neu-button text-zinc-300 hover:text-white md:hidden flex items-center justify-center cursor-pointer active:scale-95 transition-all"
               aria-label="Close Inspector"
             >
-              <X size={15} weight="bold" />
+              <X size={17} weight="bold" />
             </button>
           </div>
         </div>
 
       {/* Navigation Sub-Tabs (Neumorphic Recessed Well) */}
-      <div className="neu-well p-1.5 mx-3 mt-3 rounded-2xl flex gap-1.5 text-xs">
+      <div className="neu-well p-1.5 mx-3 mt-2 rounded-2xl flex gap-1.5 text-xs shrink-0">
         <button
           type="button"
           onClick={() => setActiveInspectorTab('canvas')}
-          className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
+          className={`min-h-[40px] flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-98 cursor-pointer ${
             activeInspectorTab === 'canvas' && !selectedSlotId && !selectedTextId
               ? 'neu-button-active text-white font-medium'
               : 'neu-button text-zinc-400 hover:text-white'
@@ -183,7 +183,7 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('calendar')}
-            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`min-h-[40px] flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-98 cursor-pointer ${
               activeInspectorTab === 'calendar'
                 ? 'neu-button-active text-white font-medium'
                 : 'neu-button text-zinc-400 hover:text-white'
@@ -198,7 +198,7 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('slot')}
-            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`min-h-[40px] flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-98 cursor-pointer ${
               activeInspectorTab === 'slot'
                 ? 'neu-button-active text-white font-medium'
                 : 'neu-button text-zinc-400 hover:text-white'
@@ -213,7 +213,7 @@ export const InspectorPanel: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveInspectorTab('text')}
-            className={`flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`min-h-[40px] flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-98 cursor-pointer ${
               activeInspectorTab === 'text'
                 ? 'neu-button-active text-white font-medium'
                 : 'neu-button text-zinc-400 hover:text-white'
@@ -225,8 +225,8 @@ export const InspectorPanel: React.FC = () => {
         )}
       </div>
 
-      {/* Scrollable Content Body */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 text-xs">
+      {/* Scrollable Content Body with bottom safe area padding */}
+      <div className="flex-1 overflow-y-auto p-4 pb-24 md:pb-6 space-y-6 text-xs">
         {/* ================= SLOT INSPECTOR ================= */}
         {selectedSlotId && activeSlot && activeInspectorTab === 'slot' && (
           <div className="space-y-5">

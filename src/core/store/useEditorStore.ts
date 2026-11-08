@@ -76,6 +76,40 @@ defaultTemplate.defaultSlots.forEach((s) => {
   initialSlots[s.id] = { ...s };
 });
 
+let firstPastState: any = null;
+let lastDeltaState: any = null;
+let pendingDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingHandleSetFn: any = null;
+let pendingCurrentStateObj: any = null;
+
+export function flushPendingHistory(): void {
+  if (pendingDebounceTimer) {
+    clearTimeout(pendingDebounceTimer);
+    pendingDebounceTimer = null;
+  }
+  if (firstPastState && pendingHandleSetFn) {
+    const s = firstPastState;
+    firstPastState = null;
+    pendingHandleSetFn(s, undefined, pendingCurrentStateObj, lastDeltaState);
+    pendingHandleSetFn = null;
+  }
+}
+
+export function clearPendingHistory(): void {
+  if (pendingDebounceTimer) {
+    clearTimeout(pendingDebounceTimer);
+    pendingDebounceTimer = null;
+  }
+  firstPastState = null;
+  lastDeltaState = null;
+  pendingHandleSetFn = null;
+  pendingCurrentStateObj = null;
+}
+
+export function hasPendingHistory(): boolean {
+  return Boolean(firstPastState);
+}
+
 export const useEditorStore = create<EditorState>()(
   temporal(
     (set, get) => ({
@@ -651,6 +685,21 @@ export const useEditorStore = create<EditorState>()(
           pastState.slots === currentState.slots &&
           pastState.textLayers === currentState.textLayers
         );
+      },
+      handleSet: (handleSet) => {
+        return (pastState, replace, currentState, deltaState) => {
+          if (!firstPastState) {
+            firstPastState = pastState;
+          }
+          lastDeltaState = deltaState;
+          pendingHandleSetFn = handleSet;
+          pendingCurrentStateObj = currentState;
+
+          if (pendingDebounceTimer) clearTimeout(pendingDebounceTimer);
+          pendingDebounceTimer = setTimeout(() => {
+            flushPendingHistory();
+          }, 240);
+        };
       },
     }
   )

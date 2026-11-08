@@ -7,7 +7,7 @@ import {
   ImageSquare,
   SquaresFour,
   CalendarBlank,
-  Shuffle,
+  Plus,
   ArrowCounterClockwise,
   ArrowClockwise,
   ArrowsClockwise,
@@ -22,7 +22,6 @@ interface PhotoshopToolbarProps {
 export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport }) => {
   const resetCurrentTemplate = useEditorStore((s) => s.resetCurrentTemplate);
   const bulkFillSlots = useEditorStore((s) => s.bulkFillSlots);
-  const shufflePhotos = useEditorStore((s) => s.shufflePhotos);
   const calendarConfig = useEditorStore((s) => s.calendarConfig);
   const toggleDateNumbers = useEditorStore((s) => s.toggleDateNumbers);
   const setActiveInspectorTab = useEditorStore((s) => s.setActiveInspectorTab);
@@ -154,21 +153,6 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             </div>
           )}
 
-          {/* Shuffle Photos */}
-          <div className="relative group w-full flex justify-center">
-            <button
-              type="button"
-              onClick={shufflePhotos}
-              className="w-9 h-9 rounded-xl flex items-center justify-center neu-button text-zinc-300 hover:text-white cursor-pointer"
-              aria-label="Shuffle Photos"
-            >
-              <Shuffle size={18} weight="bold" />
-            </button>
-            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-xl neu-raised text-white text-[11px] whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-2xl text-left">
-              Shuffle photos
-            </div>
-          </div>
-
           {/* Separator / Molded Groove */}
           <div className="h-[1px] w-6 bg-black/60 shadow-[0_1px_0_rgba(255,255,255,0.04)] my-1.5" />
 
@@ -248,23 +232,41 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
         </div>
       </aside>
 
+      {/* ================= MOBILE FLOATING PLUS BUTTON (ADD PHOTOS) ================= */}
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="flex md:hidden fixed bottom-20 right-4 sm:right-6 z-30 w-14 h-14 rounded-full items-center justify-center bg-zinc-100 text-zinc-950 shadow-[0_8px_24px_rgba(0,0,0,0.65)] active:scale-90 active:shadow-sm transition-all cursor-pointer border border-white/40 select-none"
+        aria-label="Add Photos FAB"
+        title="Add photos"
+      >
+        <Plus size={26} weight="bold" />
+      </button>
+
       {/* ================= MOBILE BOTTOM TOOLS DOCK ================= */}
       <nav
-        aria-label="Mobile Studio Tools"
-        className="flex md:hidden fixed bottom-0 left-0 right-0 h-14 bg-[var(--neu-panel)] border-t border-[var(--neu-border-highlight)] items-center justify-around px-2 z-30 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(0,0,0,0.55)]"
+        aria-label="Mobile Studio Tools Dock"
+        className="flex md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[var(--neu-panel)] border-t border-[var(--neu-border-highlight)] items-center justify-around px-4 z-30 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.65)]"
       >
-        {/* Add Photos */}
+        {/* 1. Grid Selection & Positioning */}
         <button
           type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className="flex flex-col items-center justify-center py-1 px-2 text-zinc-300 hover:text-white active:scale-[0.97] transition-transform cursor-pointer"
-          aria-label="Add Photos"
+          onClick={() => {
+            selectGrid(!isGridSelected);
+            setIsMobileInspectorOpen(true);
+          }}
+          className={`min-h-[48px] min-w-[64px] flex-1 flex flex-col items-center justify-center rounded-xl active:scale-95 transition-all cursor-pointer ${
+            isGridSelected
+              ? 'neu-button-active text-white font-medium'
+              : 'text-zinc-300 hover:text-white'
+          }`}
+          aria-label="Select Grid"
         >
-          <UploadSimple size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Photos</span>
+          <SquaresFour size={20} weight="bold" />
+          <span className="text-[10px] font-medium tracking-tight mt-1">Grid</span>
         </button>
 
-        {/* Background Settings */}
+        {/* 2. Backdrop / Canvas Settings */}
         <button
           type="button"
           onClick={() => {
@@ -273,114 +275,38 @@ export const PhotoshopToolbar: React.FC<PhotoshopToolbarProps> = ({ onOpenExport
             setActiveInspectorTab('canvas');
             setIsMobileInspectorOpen(true);
           }}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl active:scale-[0.97] transition-transform cursor-pointer ${
+          className={`min-h-[48px] min-w-[64px] flex-1 flex flex-col items-center justify-center rounded-xl active:scale-95 transition-all cursor-pointer ${
             isCanvasBackgroundActive
-              ? 'neu-pressed-sm text-white font-medium'
+              ? 'neu-button-active text-white font-medium'
               : 'text-zinc-300 hover:text-white'
           }`}
-          aria-label="Background Settings"
+          aria-label="Backdrop Settings"
         >
-          <ImageSquare size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Backdrop</span>
+          <ImageSquare size={20} weight="bold" />
+          <span className="text-[10px] font-medium tracking-tight mt-1">Backdrop</span>
         </button>
 
-        {/* Grid Selection */}
-        <button
-          type="button"
-          onClick={() => {
-            selectGrid(!isGridSelected);
-            setIsMobileInspectorOpen(true);
-          }}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl active:scale-[0.97] transition-transform cursor-pointer ${
-            isGridSelected
-              ? 'neu-pressed-sm text-white font-medium'
-              : 'text-zinc-300 hover:text-white'
-          }`}
-          aria-label="Select Grid"
-        >
-          <SquaresFour size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Grid</span>
-        </button>
-
-        {/* Date Numbers Toggle */}
-        {calendarConfig?.enabled && (
-          <button
-            type="button"
-            onClick={toggleDateNumbers}
-            className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl relative active:scale-[0.97] transition-transform cursor-pointer ${
-              calendarConfig.showDateNumbers ? 'neu-pressed-sm text-white font-medium' : 'text-zinc-300 hover:text-white'
-            }`}
-            aria-label="Toggle Numbers"
-          >
-            <CalendarBlank size={18} weight="bold" />
-            <span className="text-[9px] mt-0.5 tracking-normal">
-              {calendarConfig.showDateNumbers ? 'Num on' : 'Numbers'}
-            </span>
-            {calendarConfig.showDateNumbers && (
-              <span className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-white shadow-xs" />
-            )}
-          </button>
-        )}
-
-        {/* Shuffle Photos */}
-        <button
-          type="button"
-          onClick={shufflePhotos}
-          className="flex flex-col items-center justify-center py-1 px-2 text-zinc-300 hover:text-white active:scale-[0.97] transition-transform cursor-pointer"
-          aria-label="Shuffle"
-        >
-          <Shuffle size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Shuffle</span>
-        </button>
-
-        {/* Undo */}
-        <button
-          type="button"
-          disabled={!canUndo}
-          onClick={() => undo()}
-          className="flex flex-col items-center justify-center py-1 px-1.5 text-zinc-300 hover:text-white active:scale-[0.97] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
-          aria-label="Undo"
-        >
-          <ArrowCounterClockwise size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Undo</span>
-        </button>
-
-        {/* Redo */}
-        <button
-          type="button"
-          disabled={!canRedo}
-          onClick={() => redo()}
-          className="flex flex-col items-center justify-center py-1 px-1.5 text-zinc-300 hover:text-white active:scale-[0.97] disabled:opacity-25 transition-transform cursor-pointer disabled:cursor-not-allowed"
-          aria-label="Redo"
-        >
-          <ArrowClockwise size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Redo</span>
-        </button>
-
-        {/* Adjust Drawer Toggle */}
+        {/* 3. Adjust Inspector Drawer */}
         <button
           type="button"
           onClick={() => setIsMobileInspectorOpen(!isMobileInspectorOpen)}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl active:scale-[0.97] transition-all cursor-pointer ${
-            isMobileInspectorOpen || selectedSlotId || selectedTextId
-              ? 'neu-pressed-sm text-white font-medium'
+          className={`min-h-[48px] min-w-[64px] flex-1 flex flex-col items-center justify-center rounded-xl relative active:scale-95 transition-all cursor-pointer ${
+            isMobileInspectorOpen
+              ? 'neu-button-active text-white font-medium'
               : 'text-zinc-300 hover:text-white'
           }`}
-          aria-label="Inspector Drawer"
+          aria-label="Toggle Inspector Drawer"
         >
-          <SlidersHorizontal size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 tracking-normal">Adjust</span>
-        </button>
-
-        {/* Export CTA */}
-        <button
-          type="button"
-          onClick={onOpenExport}
-          className="neu-button flex flex-col items-center justify-center py-1 px-3 rounded-xl active:scale-[0.97] transition-transform cursor-pointer text-white"
-          aria-label="Export"
-        >
-          <DownloadSimple size={18} weight="bold" />
-          <span className="text-[9px] mt-0.5 font-medium">Save</span>
+          <div className="relative">
+            <SlidersHorizontal size={20} weight="bold" />
+            {(selectedSlotId || selectedTextId || isGridSelected) && (
+              <span
+                className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                title="Active element selected"
+              />
+            )}
+          </div>
+          <span className="text-[10px] font-medium tracking-tight mt-1">Adjust</span>
         </button>
       </nav>
     </>
