@@ -506,6 +506,20 @@ button:active {
   }
 }
 
+/* Text Cursor Flashing Indicator */
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-start infinite;
+}
+
 /* Custom dark scrollbar */
 ::-webkit-scrollbar {
   width: 5px;

@@ -54,16 +54,17 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   useEffect(() => {
     if (isInlineEditing && textareaRef.current) {
       textareaRef.current.focus();
-      textareaRef.current.select();
+      const len = textareaRef.current.value.length;
+      textareaRef.current.setSelectionRange(len, len);
       textareaRef.current.style.height = '0px';
-      textareaRef.current.style.height = `${Math.max(44, textareaRef.current.scrollHeight + 8)}px`;
+      textareaRef.current.style.height = `${Math.max(28, textareaRef.current.scrollHeight)}px`;
     }
   }, [isInlineEditing]);
 
   useEffect(() => {
     if (isInlineEditing && textareaRef.current) {
       textareaRef.current.style.height = '0px';
-      textareaRef.current.style.height = `${Math.max(44, textareaRef.current.scrollHeight + 8)}px`;
+      textareaRef.current.style.height = `${Math.max(28, textareaRef.current.scrollHeight)}px`;
     }
   }, [textLayer?.content, textLayer?.fontSize]);
 
@@ -302,10 +303,10 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
   return (
     <div
       ref={elementRef}
-      className={`absolute z-30 transition-shadow select-none box-border flex flex-col justify-center touch-none ${
+      className={`absolute z-30 select-none box-border flex flex-col justify-center touch-none ${
         !isExporting && isSelected
-          ? 'outline outline-1 outline-white/80 bg-white/[0.04] rounded px-1.5 py-1 cursor-grab active:cursor-grabbing'
-          : 'hover:outline hover:outline-1 hover:outline-white/30 rounded px-1.5 py-1 cursor-grab'
+          ? 'outline outline-1 outline-white/50'
+          : 'hover:outline hover:outline-1 hover:outline-white/20'
       }`}
       style={{
         left: `${currentX}px`,
@@ -320,11 +321,6 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
         if (!isExporting) {
           e.stopPropagation();
           selectText(textId);
-        }
-      }}
-      onDoubleClick={(e) => {
-        if (!isExporting) {
-          e.stopPropagation();
           setIsInlineEditing(true);
         }
       }}
@@ -334,18 +330,19 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       onPointerCancel={handlePointerUp}
     >
       {/* Visual drag move badge when selected */}
-      {!isExporting && isSelected && !isInlineEditing && (
+      {!isExporting && isSelected && (
         <div
           title="Drag to reposition text (snaps to center)"
-          className="absolute -top-6 left-1/2 -translate-x-1/2 p-1 rounded-full neu-raised text-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-none z-40"
+          className="absolute -top-7 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#141722] text-zinc-300 hover:text-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing z-40 touch-none"
+          onPointerDown={handlePointerDown}
         >
-          <ArrowsOutCardinal size={11} weight="bold" />
+          <ArrowsOutCardinal size={12} weight="bold" />
         </div>
       )}
 
       {/* Live Dimension Tooltip while resizing */}
       {!isExporting && isSelected && liveDimensions && (
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-0.5 neu-raised text-[10px] text-zinc-200 shadow-xl pointer-events-none whitespace-nowrap z-50 rounded-lg">
+        <div className="absolute -top-11 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-[#141722] border border-white/10 text-[10px] text-zinc-200 shadow-xl pointer-events-none whitespace-nowrap z-50 rounded-lg">
           W: {liveDimensions.width}px × H: {liveDimensions.height}px
         </div>
       )}
@@ -430,36 +427,53 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
       )}
 
       {isInlineEditing && !isExporting ? (
-        <textarea
-          ref={textareaRef}
-          value={content}
-          onChange={(e) => {
-            updateText(textId, { content: e.target.value });
-            e.target.style.height = '0px';
-            e.target.style.height = `${Math.max(44, e.target.scrollHeight + 8)}px`;
-          }}
-          onBlur={() => setIsInlineEditing(false)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') setIsInlineEditing(false);
-          }}
-          className="w-full neu-well border border-[var(--neu-border-highlight)] text-white rounded-xl p-2.5 outline-none resize-none overflow-hidden shadow-2xl"
-          style={{
-            fontFamily: getFontFamilyCss(),
-            fontSize: `${fontSize}px`,
-            fontWeight,
-            color,
-            textAlign: align,
-            letterSpacing: `${letterSpacing}px`,
-            lineHeight,
-            fontStyle: italic ? 'italic' : 'normal',
-            textTransform,
-            overflowWrap: 'anywhere',
-            wordBreak: 'break-word',
-          }}
-        />
+        <div className="relative w-full">
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => {
+              updateText(textId, { content: e.target.value });
+              e.target.style.height = '0px';
+              e.target.style.height = `${Math.max(28, e.target.scrollHeight)}px`;
+            }}
+            onBlur={() => setIsInlineEditing(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setIsInlineEditing(false);
+            }}
+            className="w-full bg-transparent border-0 outline-none resize-none overflow-hidden p-0 m-0 shadow-none block selection:bg-white/20"
+            style={{
+              fontFamily: getFontFamilyCss(),
+              fontSize: `${fontSize}px`,
+              fontWeight,
+              color,
+              textAlign: align,
+              letterSpacing: `${letterSpacing}px`,
+              lineHeight,
+              fontStyle: italic ? 'italic' : 'normal',
+              textTransform,
+              textShadow: textShadowStyle,
+              overflowWrap: 'anywhere',
+              wordBreak: 'break-word',
+              caretColor: color || '#ffffff',
+            }}
+          />
+          {content.length === 0 && (
+            <span
+              className="absolute top-0 left-0 pointer-events-none select-none animate-blink font-light"
+              style={{
+                fontFamily: getFontFamilyCss(),
+                fontSize: `${fontSize}px`,
+                color: color || '#ffffff',
+                lineHeight,
+              }}
+            >
+              |
+            </span>
+          )}
+        </div>
       ) : (
         <div
-          className="whitespace-pre-wrap leading-relaxed w-full"
+          className="whitespace-pre-wrap leading-relaxed w-full cursor-text"
           style={{
             fontFamily: getFontFamilyCss(),
             fontSize: `${fontSize}px`,
@@ -476,6 +490,14 @@ export const EditableTextLayer: React.FC<EditableTextLayerProps> = ({ textId }) 
           }}
         >
           {content}
+          {!isExporting && isSelected && (
+            <span
+              className="inline-block animate-blink font-light ml-0.5 select-none pointer-events-none"
+              style={{ color: color || '#ffffff' }}
+            >
+              |
+            </span>
+          )}
         </div>
       )}
     </div>
