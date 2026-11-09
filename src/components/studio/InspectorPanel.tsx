@@ -66,7 +66,11 @@ export const InspectorPanel: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       try {
         const compressed = await compressImageFile(e.target.files[0], 3840, 0.92);
-        updateBackground({ imageUrl: compressed.blobUrl });
+        updateBackground({
+          imageUrl: compressed.blobUrl,
+          scale: 1.0,
+          position: { x: 0, y: 0 },
+        });
       } catch (err) {
         console.error('Failed to compress background image:', err);
       }
@@ -1107,6 +1111,15 @@ export const InspectorPanel: React.FC = () => {
                         />
                       </div>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => updateBackground({ scale: 1.0, position: { x: 0, y: 0 } })}
+                      className="w-full py-2 rounded-xl neu-button flex items-center justify-center gap-1.5 text-zinc-300 hover:text-white cursor-pointer text-xs"
+                    >
+                      <ArrowsClockwise size={14} weight="bold" />
+                      <span>Reset background to fit (1.0x)</span>
+                    </button>
 
                     {/* Dark Dimming Overlay */}
                     <div className="flex items-center justify-between text-[11px] pt-1">

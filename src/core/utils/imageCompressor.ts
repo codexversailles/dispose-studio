@@ -19,6 +19,79 @@ export async function compressImageFile(
   maxDimension = 3840,
   quality = 0.92
 ): Promise<CompressedImageResult> {
+  const id = `${IDB_IMAGE_PREFIX}${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+  // Modern browsers: use createImageBitmap to strictly honor EXIF orientation and prevent cropping
+  if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const origWidth = bitmap.width;
+      const origHeight = bitmap.height;
+
+      // If already within 4K bounds, preserve original file blob directly without re-compression or cropping
+      if (origWidth <= maxDimension && origHeight <= maxDimension) {
+        bitmap.close();
+        try {
+          await set(id, file);
+        } catch (err) {
+          console.warn('Could not cache image in IndexedDB:', err);
+        }
+        const blobUrl = URL.createObjectURL(file);
+        return {
+          id,
+          blobUrl,
+          width: origWidth,
+          height: origHeight,
+          sizeBytes: file.size,
+        };
+      }
+
+      // Proportional downscale to maxDimension
+      const scale = Math.min(maxDimension / origWidth, maxDimension / origHeight);
+      const targetWidth = Math.max(1, Math.round(origWidth * scale));
+      const targetHeight = Math.max(1, Math.round(origHeight * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, 0, 0, targetWidth, targetHeight);
+        bitmap.close();
+
+        return new Promise((resolve) => {
+          canvas.toBlob(
+            async (blob) => {
+              const finalBlob = blob || file;
+              try {
+                await set(id, finalBlob);
+              } catch (err) {
+                console.warn('Could not cache image in IndexedDB:', err);
+              }
+              const blobUrl = URL.createObjectURL(finalBlob);
+              resolve({
+                id,
+                blobUrl,
+                width: targetWidth,
+                height: targetHeight,
+                sizeBytes: finalBlob.size,
+              });
+            },
+            'image/webp',
+            quality
+          );
+        });
+      }
+      bitmap.close();
+    } catch {
+      // Fallback to Image element below if createImageBitmap fails
+    }
+  }
+
+  // Fallback using HTMLImageElement
   return new Promise((resolve, reject) => {
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
@@ -26,55 +99,71 @@ export async function compressImageFile(
     img.onload = async () => {
       URL.revokeObjectURL(objectUrl);
 
-      let { width, height } = img;
-      if (width > maxDimension || height > maxDimension) {
-        if (width > height) {
-          height = Math.round((height * maxDimension) / width);
-          width = maxDimension;
-        } else {
-          width = Math.round((width * maxDimension) / height);
-          height = maxDimension;
+      const origWidth = img.naturalWidth || img.width || 1;
+      const origHeight = img.naturalHeight || img.height || 1;
+
+      if (origWidth <= maxDimension && origHeight <= maxDimension) {
+        try {
+          await set(id, file);
+        } catch (err) {
+          console.warn('Could not cache image in IndexedDB:', err);
         }
-      }
-
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext('2d', { alpha: false });
-      if (!ctx) {
-        reject(new Error('Canvas 2D context unavailable'));
+        const blobUrl = URL.createObjectURL(file);
+        resolve({
+          id,
+          blobUrl,
+          width: origWidth,
+          height: origHeight,
+          sizeBytes: file.size,
+        });
         return;
       }
 
-      // High quality smoothing
+      const scale = Math.min(maxDimension / origWidth, maxDimension / origHeight);
+      const targetWidth = Math.max(1, Math.round(origWidth * scale));
+      const targetHeight = Math.max(1, Math.round(origHeight * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        try {
+          await set(id, file);
+        } catch {
+          // ignore
+        }
+        resolve({
+          id,
+          blobUrl: URL.createObjectURL(file),
+          width: origWidth,
+          height: origHeight,
+          sizeBytes: file.size,
+        });
+        return;
+      }
+
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, width, height);
+      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
       canvas.toBlob(
         async (blob) => {
-          if (!blob) {
-            reject(new Error('Failed to compress image to blob'));
-            return;
-          }
-
-          const id = `${IDB_IMAGE_PREFIX}${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-          
-          // Persist blob to IndexedDB
+          const finalBlob = blob || file;
           try {
-            await set(id, blob);
+            await set(id, finalBlob);
           } catch (err) {
             console.warn('Could not cache image in IndexedDB:', err);
           }
 
-          const blobUrl = URL.createObjectURL(blob);
+          const blobUrl = URL.createObjectURL(finalBlob);
           resolve({
             id,
             blobUrl,
-            width,
-            height,
-            sizeBytes: blob.size,
+            width: targetWidth,
+            height: targetHeight,
+            sizeBytes: finalBlob.size,
           });
         },
         'image/webp',

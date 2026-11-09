@@ -277,7 +277,7 @@ export const PhotoSlot: React.FC<PhotoSlotProps> = ({ slotId }) => {
             src={imageUrl}
             alt=""
             draggable={false}
-            className="w-full h-full object-contain will-change-transform pointer-events-none select-none"
+            className="w-full h-full max-w-full max-h-full object-contain will-change-transform pointer-events-none select-none"
             style={{
               transform: `scale(${scale}) translate(${x}%, ${y}%)`,
               transformOrigin: 'center center',

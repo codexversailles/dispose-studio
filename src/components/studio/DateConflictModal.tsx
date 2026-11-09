@@ -166,7 +166,7 @@ export const DateConflictModal: React.FC = () => {
                           <img
                             src={photo.blobUrl}
                             alt={photo.fileName}
-                            className="w-full h-full object-cover rounded-lg"
+                            className="w-full h-full object-contain rounded-lg"
                           />
 
                           {/* Selection Checkmark */}
