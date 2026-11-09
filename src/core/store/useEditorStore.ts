@@ -347,10 +347,11 @@ export const useEditorStore = create<EditorState>()(
                 ...current,
                 imageUrl,
                 frameStyle: imageUrl ? 'photo' : 'empty-bordered',
-                hasBorder: imageUrl ? false : true,
+                hasBorder: current.hasBorder !== undefined ? current.hasBorder : true,
                 scale: 1.0,
                 x: 0,
                 y: 0,
+                aspectRatio: current.aspectRatio || '1:1',
               },
             },
           };
@@ -468,10 +469,11 @@ export const useEditorStore = create<EditorState>()(
                 ...updatedSlots[k],
                 imageUrl: url,
                 frameStyle: 'photo',
-                hasBorder: false,
+                hasBorder: updatedSlots[k].hasBorder !== undefined ? updatedSlots[k].hasBorder : true,
                 scale: 1.0,
                 x: 0,
                 y: 0,
+                aspectRatio: updatedSlots[k].aspectRatio || '1:1',
               };
             }
           });
@@ -494,10 +496,11 @@ export const useEditorStore = create<EditorState>()(
                 ...slot,
                 imageUrl: blobUrl,
                 frameStyle: 'photo',
-                hasBorder: false,
+                hasBorder: slot.hasBorder !== undefined ? slot.hasBorder : true,
                 scale: 1.0,
                 x: 0,
                 y: 0,
+                aspectRatio: slot.aspectRatio || '1:1',
               };
               changed = true;
             }
@@ -707,13 +710,13 @@ export const useEditorStore = create<EditorState>()(
             const tmpl = getTemplateById(snapshot.activeTemplateId || DEFAULT_TEMPLATE_ID);
 
             const restoredTextLayers = { ...snapshot.textLayers };
-            // If text layers are still on old default (Ralphi Sans), migrate to new default Arial Light
+            // If text layers are still on old default (Ralphi Sans / Arial Light), migrate to new default Arial
             Object.keys(restoredTextLayers).forEach((key) => {
-              if (restoredTextLayers[key].fontFamily === 'Ralphi Sans') {
+              if (restoredTextLayers[key].fontFamily === 'Ralphi Sans' || restoredTextLayers[key].fontFamily === 'Arial Light') {
                 restoredTextLayers[key] = {
                   ...restoredTextLayers[key],
-                  fontFamily: 'Arial Light',
-                  fontWeight: 300,
+                  fontFamily: 'Arial',
+                  fontWeight: 400,
                 };
               }
             });
@@ -722,13 +725,13 @@ export const useEditorStore = create<EditorState>()(
               ? {
                   ...snapshot.calendarConfig,
                   weekdayFontFamily:
-                    snapshot.calendarConfig.weekdayFontFamily === 'Ralphi Sans'
-                      ? 'Arial Light'
-                      : snapshot.calendarConfig.weekdayFontFamily || 'Arial Light',
+                    snapshot.calendarConfig.weekdayFontFamily === 'Ralphi Sans' || snapshot.calendarConfig.weekdayFontFamily === 'Arial Light'
+                      ? 'Arial'
+                      : snapshot.calendarConfig.weekdayFontFamily || 'Arial',
                   weekdayFontWeight:
-                    snapshot.calendarConfig.weekdayFontFamily === 'Ralphi Sans'
-                      ? 300
-                      : snapshot.calendarConfig.weekdayFontWeight || 300,
+                    snapshot.calendarConfig.weekdayFontFamily === 'Ralphi Sans' || snapshot.calendarConfig.weekdayFontFamily === 'Arial Light'
+                      ? 400
+                      : snapshot.calendarConfig.weekdayFontWeight || 400,
                 }
               : tmpl.calendarConfig!;
 

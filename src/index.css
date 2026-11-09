@@ -394,17 +394,22 @@
   --neu-shadow-artboard: 18px 18px 45px rgba(0, 0, 0, 0.75), -8px -8px 25px rgba(255, 255, 255, 0.025);
   --neu-border-focus: rgba(255, 255, 255, 0.12);
 
+  --font-arial: Arial, 'Helvetica Neue', Helvetica, sans-serif;
   --font-ralphi: 'Ralphi Sans', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   --font-helvetica: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   --font-inter: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+@theme {
+  --font-sans: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
 html, body {
   overflow-x: clip;
   background-color: var(--color-studio-bg);
   color: var(--color-studio-text);
-  font-family: var(--font-ralphi);
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;

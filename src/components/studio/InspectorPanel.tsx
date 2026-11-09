@@ -1210,29 +1210,29 @@ export const InspectorPanel: React.FC = () => {
                 <label className="text-[11px] font-medium text-white/70 uppercase tracking-wider text-left block">
                   Grid Layout & Spacing
                 </label>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => selectGrid(!isGridSelected)}
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer transition-all ${
-                      isGridSelected
-                        ? 'neu-button-active text-white'
-                        : 'neu-button text-zinc-300 hover:text-white'
-                    }`}
-                  >
-                    {isGridSelected ? 'Move Grid Active' : 'Select Grid'}
-                  </button>
-                  {(gridConfig.x !== 0 || gridConfig.y !== 0) && (
-                    <button
-                      type="button"
-                      onClick={() => updateGridPosition(0, 0)}
-                      className="neu-button px-2.5 py-1 rounded-xl text-[11px] text-zinc-400 hover:text-white font-medium cursor-pointer text-right"
-                    >
-                      Reset Center
-                    </button>
-                  )}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => selectGrid(!isGridSelected)}
+                  className={`px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer transition-all ${
+                    isGridSelected
+                      ? 'neu-button-active text-white'
+                      : 'neu-button text-zinc-300 hover:text-white'
+                  }`}
+                >
+                  {isGridSelected ? 'Move Grid Active' : 'Select Grid'}
+                </button>
               </div>
+
+              {/* Reset Center Button (Centered across layout) */}
+              <button
+                type="button"
+                onClick={() => updateGridPosition(0, 0)}
+                disabled={gridConfig.x === 0 && gridConfig.y === 0}
+                className="w-full py-2 rounded-xl neu-button flex items-center justify-center gap-1.5 text-[11px] font-medium cursor-pointer text-zinc-300 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-all"
+              >
+                <ArrowsClockwise size={14} weight="bold" />
+                <span>Reset Grid to Center</span>
+              </button>
 
               {/* Grid Border Color Option */}
               <div className="space-y-2 pt-1">
